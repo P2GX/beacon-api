@@ -5,6 +5,8 @@ entity-specific services. Implementers should subclass these and
 provide concrete implementations for their database/storage backend.
 """
 
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 
