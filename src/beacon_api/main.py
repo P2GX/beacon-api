@@ -17,6 +17,7 @@ from beacon_api.api import (
     individuals_router,
     info_router,
     runs_router,
+    monitor_router
 )
 from beacon_api.core.config import get_settings
 
@@ -78,6 +79,7 @@ def create_app() -> FastAPI:
     app.include_router(cohorts_router, prefix="/api")
     app.include_router(datasets_router, prefix="/api")
     app.include_router(runs_router, prefix="/api")
+    app.include_router(monitor_router, prefix="/api")
 
     @app.get("/", include_in_schema=False)
     async def root() -> dict[str, Any]:
@@ -87,17 +89,8 @@ def create_app() -> FastAPI:
             "version": __version__,
             "docs": "/docs",
             "info": "/api/info",
+            "monitor": "/api/monitor/health",
         }
-
-    @app.get("/health", tags=["health"])
-    async def health_check() -> dict[str, str]:
-        """
-        Health check endpoint.
-
-        Returns:
-            Health status
-        """
-        return {"status": "healthy"}
 
     return app
 
