@@ -7,8 +7,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from beacon_skeleton import __version__
-from beacon_skeleton.api import (
+from fast_beacon import __version__
+from fast_beacon.api import (
     analyses_router,
     biosamples_router,
     cohorts_router,
@@ -18,7 +18,7 @@ from beacon_skeleton.api import (
     info_router,
     runs_router,
 )
-from beacon_skeleton.core.config import get_settings
+from fast_beacon.core.config import get_settings
 
 
 @asynccontextmanager
@@ -110,7 +110,7 @@ if __name__ == "__main__":
 
     settings = get_settings()
     uvicorn.run(
-        "beacon_skeleton.main:app",
+        "fast_beacon.main:app",
         host=settings.host,
         port=settings.port,
         reload=settings.reload,

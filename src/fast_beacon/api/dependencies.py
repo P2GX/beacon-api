@@ -8,7 +8,7 @@ from typing import Annotated
 
 from fastapi import Depends
 
-from beacon_skeleton.services.base import (
+from fast_beacon.services.base import (
     AnalysisService,
     BiosampleService,
     CohortService,

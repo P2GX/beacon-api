@@ -4,13 +4,13 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException, Query
 
-from beacon_skeleton.api.dependencies import BiosampleServiceDep
-from beacon_skeleton.models.entities import Biosample
-from beacon_skeleton.models.request import (
+from fast_beacon.api.dependencies import BiosampleServiceDep
+from fast_beacon.models.entities import Biosample
+from fast_beacon.models.request import (
     BeaconRequestBody,
     RequestedGranularity,
 )
-from beacon_skeleton.models.response import (
+from fast_beacon.models.response import (
     BeaconResponseMeta,
     BeaconResultsetsResponse,
     BeaconSummaryResults,

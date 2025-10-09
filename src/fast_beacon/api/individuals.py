@@ -4,14 +4,14 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException, Query
 
-from beacon_skeleton.api.dependencies import IndividualServiceDep
-from beacon_skeleton.models.common import Pagination
-from beacon_skeleton.models.entities import Individual
-from beacon_skeleton.models.request import (
+from fast_beacon.api.dependencies import IndividualServiceDep
+from fast_beacon.models.common import Pagination
+from fast_beacon.models.entities import Individual
+from fast_beacon.models.request import (
     BeaconRequestBody,
     RequestedGranularity,
 )
-from beacon_skeleton.models.response import (
+from fast_beacon.models.response import (
     BeaconBooleanResponse,
     BeaconCountResponse,
     BeaconResponseMeta,

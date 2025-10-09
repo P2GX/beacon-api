@@ -8,7 +8,7 @@ provide concrete implementations for their database/storage backend.
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 
-from beacon_skeleton.models.entities import (
+from fast_beacon.models.entities import (
     Analysis,
     Biosample,
     Cohort,
@@ -17,7 +17,7 @@ from beacon_skeleton.models.entities import (
     Individual,
     Run,
 )
-from beacon_skeleton.models.request import BeaconRequestBody, FilteringTerm
+from fast_beacon.models.request import BeaconRequestBody, FilteringTerm
 
 
 class BaseBeaconService(ABC):

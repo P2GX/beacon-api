@@ -3,7 +3,7 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from beacon_skeleton.main import create_app
+from fast_beacon.main import create_app
 
 
 @pytest.fixture

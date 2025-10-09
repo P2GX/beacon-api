@@ -4,13 +4,13 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException, Query
 
-from beacon_skeleton.api.dependencies import GenomicVariationServiceDep
-from beacon_skeleton.models.entities import GenomicVariation
-from beacon_skeleton.models.request import (
+from fast_beacon.api.dependencies import GenomicVariationServiceDep
+from fast_beacon.models.entities import GenomicVariation
+from fast_beacon.models.request import (
     BeaconRequestBody,
     RequestedGranularity,
 )
-from beacon_skeleton.models.response import (
+from fast_beacon.models.response import (
     BeaconResponseMeta,
     BeaconResultsetsResponse,
     BeaconSummaryResults,
