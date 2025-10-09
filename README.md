@@ -1,6 +1,6 @@
-# Beacon Skeleton
+# Beacon API
 
-A production-ready skeleton implementation of the [GA4GH Beacon v2 API](https://github.com/ga4gh-beacon/beacon-v2) using FastAPI. This project provides a complete, idiomatic FastAPI structure with abstract service interfaces, making it easy to implement your own database backend.
+A production-ready implementation of the [GA4GH Beacon v2 API](https://github.com/ga4gh-beacon/beacon-v2) using FastAPI. This project provides a complete, idiomatic FastAPI structure with abstract service interfaces, making it easy to implement your own database backend.
 
 ## Features
 
