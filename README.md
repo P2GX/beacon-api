@@ -16,8 +16,8 @@ A production-ready skeleton implementation of the [GA4GH Beacon v2 API](https://
 ## Architecture
 
 ```
-fast-beacon/
-├── src/fast_beacon/
+beacon-api/
+├── src/beacon_api/
 │   ├── api/                    # FastAPI routers and endpoints
 │   │   ├── individuals.py      # Individuals endpoint
 │   │   ├── biosamples.py       # Biosamples endpoint
@@ -55,8 +55,8 @@ fast-beacon/
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/fast-beacon.git
-cd fast-beacon
+git clone https://github.com/yourusername/beacon-api.git
+cd beacon-api
 ```
 
 2. Create a virtual environment and install dependencies:
@@ -80,7 +80,7 @@ cp .env.example .env
 
 4. Run the development server:
 ```bash
-uvicorn fast_beacon.main:app --reload
+uvicorn beacon_api.main:app --reload
 ```
 
 The API will be available at:
@@ -94,13 +94,13 @@ The skeleton provides abstract service interfaces that you need to implement for
 
 ### 1. Create Your Service Implementation
 
-Create a new file `src/fast_beacon/services/implementations.py`:
+Create a new file `src/beacon_api/services/implementations.py`:
 
 ```python
 from typing import Optional
-from fast_beacon.services.base import IndividualService
-from fast_beacon.models.entities import Individual
-from fast_beacon.models.request import BeaconRequestBody, FilteringTerm
+from beacon_api.services.base import IndividualService
+from beacon_api.models.entities import Individual
+from beacon_api.models.request import BeaconRequestBody, FilteringTerm
 
 class MyIndividualService(IndividualService):
     def __init__(self, db_connection):
@@ -142,10 +142,10 @@ class MyIndividualService(IndividualService):
 
 ### 2. Override Dependencies
 
-Update `src/fast_beacon/api/dependencies.py`:
+Update `src/beacon_api/api/dependencies.py`:
 
 ```python
-from fast_beacon.services.implementations import MyIndividualService
+from beacon_api.services.implementations import MyIndividualService
 from your_database import get_db_connection
 
 def get_individual_service() -> IndividualService:
@@ -157,7 +157,7 @@ def get_individual_service() -> IndividualService:
 
 ### 3. Initialize Database in Lifespan
 
-Update `src/fast_beacon/main.py`:
+Update `src/beacon_api/main.py`:
 
 ```python
 @asynccontextmanager
@@ -184,7 +184,7 @@ Key configuration categories:
 
 ### Build the Docker image:
 ```bash
-docker build -t fast-beacon:latest .
+docker build -t beacon-api:latest .
 ```
 
 ### Run the container:
@@ -192,7 +192,7 @@ docker build -t fast-beacon:latest .
 docker run -p 8000:8000 \
   -e BEACON_ID=my.beacon \
   -e BEACON_NAME="My Beacon" \
-  fast-beacon:latest
+  beacon-api:latest
 ```
 
 ### Using Docker Compose:
@@ -239,7 +239,7 @@ pytest
 
 With coverage:
 ```bash
-pytest --cov=src/fast_beacon --cov-report=html
+pytest --cov=src/beacon_api --cov-report=html
 ```
 
 ### Pre-commit Hooks

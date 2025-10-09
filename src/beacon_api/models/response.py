@@ -4,7 +4,7 @@ from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
-from fast_beacon.models.common import BeaconError, SchemaReference
+from beacon_api.models.common import BeaconError, SchemaReference
 
 
 class BeaconOrganization(BaseModel):

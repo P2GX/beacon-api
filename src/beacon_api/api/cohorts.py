@@ -2,8 +2,8 @@
 
 from fastapi import APIRouter, HTTPException, Query
 
-from fast_beacon.api.dependencies import CohortServiceDep
-from fast_beacon.models.entities import Cohort
+from beacon_api.api.dependencies import CohortServiceDep
+from beacon_api.models.entities import Cohort
 
 router = APIRouter(prefix="/cohorts", tags=["cohorts"])
 

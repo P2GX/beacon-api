@@ -1,6 +1,6 @@
 """Service layer interfaces for Beacon v2 implementation."""
 
-from fast_beacon.services.base import (
+from beacon_api.services.base import (
     BaseBeaconService,
     IndividualService,
     BiosampleService,

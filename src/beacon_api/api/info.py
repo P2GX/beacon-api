@@ -7,8 +7,8 @@ from typing import Any
 
 from fastapi import APIRouter
 
-from fast_beacon.core.config import get_settings
-from fast_beacon.models.response import (
+from beacon_api.core.config import get_settings
+from beacon_api.models.response import (
     BeaconInfoResponse,
     BeaconInformationalResponse,
     BeaconOrganization,

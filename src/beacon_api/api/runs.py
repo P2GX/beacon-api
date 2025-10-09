@@ -2,8 +2,8 @@
 
 from fastapi import APIRouter, HTTPException, Query
 
-from fast_beacon.api.dependencies import RunServiceDep
-from fast_beacon.models.entities import Run
+from beacon_api.api.dependencies import RunServiceDep
+from beacon_api.models.entities import Run
 
 router = APIRouter(prefix="/runs", tags=["runs"])
 

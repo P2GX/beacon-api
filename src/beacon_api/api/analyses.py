@@ -2,8 +2,8 @@
 
 from fastapi import APIRouter, HTTPException, Query
 
-from fast_beacon.api.dependencies import AnalysisServiceDep
-from fast_beacon.models.entities import Analysis
+from beacon_api.api.dependencies import AnalysisServiceDep
+from beacon_api.models.entities import Analysis
 
 router = APIRouter(prefix="/analyses", tags=["analyses"])
 

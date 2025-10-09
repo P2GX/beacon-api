@@ -42,7 +42,7 @@ dependencies = [
 
 ### Step 3: Create Database Connection Manager
 
-Create `src/fast_beacon/db/connection.py`:
+Create `src/beacon_api/db/connection.py`:
 
 ```python
 """Database connection management."""
@@ -51,7 +51,7 @@ from typing import AsyncGenerator
 from contextlib import asynccontextmanager
 import asyncpg  # or your database driver
 
-from fast_beacon.core.config import get_settings
+from beacon_api.core.config import get_settings
 
 
 class Database:
@@ -93,16 +93,16 @@ database = Database()
 
 ### Step 4: Implement Service Classes
 
-Create `src/fast_beacon/services/implementations.py`:
+Create `src/beacon_api/services/implementations.py`:
 
 ```python
 """Concrete service implementations."""
 
 from typing import Optional
-from fast_beacon.services.base import IndividualService, BiosampleService
-from fast_beacon.models.entities import Individual, Biosample
-from fast_beacon.models.request import BeaconRequestBody, FilteringTerm
-from fast_beacon.db.connection import database
+from beacon_api.services.base import IndividualService, BiosampleService
+from beacon_api.models.entities import Individual, Biosample
+from beacon_api.models.request import BeaconRequestBody, FilteringTerm
+from beacon_api.db.connection import database
 
 
 class PostgresIndividualService(IndividualService):
@@ -226,7 +226,7 @@ class PostgresBiosampleService(BiosampleService):
 
 ### Step 5: Update Dependencies
 
-Update `src/fast_beacon/api/dependencies.py`:
+Update `src/beacon_api/api/dependencies.py`:
 
 ```python
 """Dependency injection for services."""
@@ -234,12 +234,12 @@ Update `src/fast_beacon/api/dependencies.py`:
 from typing import Annotated
 from fastapi import Depends
 
-from fast_beacon.services.base import (
+from beacon_api.services.base import (
     IndividualService,
     BiosampleService,
     # ... other services
 )
-from fast_beacon.services.implementations import (
+from beacon_api.services.implementations import (
     PostgresIndividualService,
     PostgresBiosampleService,
     # ... other implementations
@@ -270,10 +270,10 @@ BiosampleServiceDep = Annotated[
 
 ### Step 6: Update Application Lifespan
 
-Update `src/fast_beacon/main.py`:
+Update `src/beacon_api/main.py`:
 
 ```python
-from fast_beacon.db.connection import database
+from beacon_api.db.connection import database
 
 
 @asynccontextmanager
@@ -292,7 +292,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
 ### Step 7: Add Database Configuration
 
-Update `src/fast_beacon/core/config.py`:
+Update `src/beacon_api/core/config.py`:
 
 ```python
 from pydantic import SecretStr
@@ -368,8 +368,8 @@ Create `tests/test_services.py`:
 """Tests for service implementations."""
 
 import pytest
-from fast_beacon.services.implementations import PostgresIndividualService
-from fast_beacon.models.request import BeaconRequestBody
+from beacon_api.services.implementations import PostgresIndividualService
+from beacon_api.models.request import BeaconRequestBody
 
 
 @pytest.fixture
@@ -445,7 +445,7 @@ Add structured logging:
 
 ```python
 import logging
-from fast_beacon.core.config import get_settings
+from beacon_api.core.config import get_settings
 
 logger = logging.getLogger(__name__)
 

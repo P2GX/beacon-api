@@ -2,8 +2,8 @@
 
 from fastapi import APIRouter, HTTPException, Query
 
-from fast_beacon.api.dependencies import DatasetServiceDep
-from fast_beacon.models.entities import Dataset
+from beacon_api.api.dependencies import DatasetServiceDep
+from beacon_api.models.entities import Dataset
 
 router = APIRouter(prefix="/datasets", tags=["datasets"])
 

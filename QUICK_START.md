@@ -35,10 +35,10 @@ cp .env.example .env
 
 ```bash
 # Start the server
-uvicorn fast_beacon.main:app --reload
+uvicorn beacon_api.main:app --reload
 
 # Or use the Python module directly
-python -m fast_beacon.main
+python -m beacon_api.main
 ```
 
 The API will be available at:
@@ -97,8 +97,8 @@ The skeleton is now running, but endpoints will return 501 (Not Implemented) unt
 
 3. **Create service implementations**:
    - See `docs/implementation_guide.md` for detailed instructions
-   - Implement abstract methods from `src/fast_beacon/services/base.py`
-   - Update `src/fast_beacon/api/dependencies.py` with your implementations
+   - Implement abstract methods from `src/beacon_api/services/base.py`
+   - Update `src/beacon_api/api/dependencies.py` with your implementations
 
 4. **Set up your database**:
    - Create database schema
@@ -112,7 +112,7 @@ The skeleton is now running, but endpoints will return 501 (Not Implemented) unt
 pytest
 
 # Run with coverage
-pytest --cov=src/fast_beacon --cov-report=html
+pytest --cov=src/beacon_api --cov-report=html
 
 # View coverage report
 open htmlcov/index.html  # On macOS
@@ -124,10 +124,10 @@ open htmlcov/index.html  # On macOS
 
 ```bash
 # Build image
-docker build -t fast-beacon:latest .
+docker build -t beacon-api:latest .
 
 # Run container
-docker run -p 8000:8000 fast-beacon:latest
+docker run -p 8000:8000 beacon-api:latest
 
 # Test health check
 curl http://localhost:8000/health
@@ -136,8 +136,8 @@ curl http://localhost:8000/health
 ## Project Structure Overview
 
 ```
-fast-beacon/
-├── src/fast_beacon/
+beacon-api/
+├── src/beacon_api/
 │   ├── api/              # FastAPI routers
 │   ├── models/           # Pydantic models
 │   ├── services/         # Service interfaces (implement these!)
@@ -153,7 +153,7 @@ fast-beacon/
 ### Port Already in Use
 ```bash
 # Use a different port
-uvicorn fast_beacon.main:app --reload --port 8001
+uvicorn beacon_api.main:app --reload --port 8001
 ```
 
 ### Import Errors

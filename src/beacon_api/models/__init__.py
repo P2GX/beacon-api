@@ -1,11 +1,11 @@
 """Beacon v2 data models."""
 
-from fast_beacon.models.common import (
+from beacon_api.models.common import (
     BeaconError,
     ListingQuery,
     Pagination,
 )
-from fast_beacon.models.request import (
+from beacon_api.models.request import (
     BeaconQuery,
     BeaconRequestBody,
     BeaconRequestParameters,
@@ -13,14 +13,14 @@ from fast_beacon.models.request import (
     OntologyFilter,
     RequestedGranularity,
 )
-from fast_beacon.models.response import (
+from beacon_api.models.response import (
     BeaconInfoResponse,
     BeaconResultsetsResponse,
     BeaconBooleanResponse,
     BeaconCountResponse,
     ResultsetInstance,
 )
-from fast_beacon.models.entities import (
+from beacon_api.models.entities import (
     Individual,
     Biosample,
     GenomicVariation,
