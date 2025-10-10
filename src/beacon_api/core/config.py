@@ -2,12 +2,19 @@
 
 from functools import lru_cache
 
-from pydantic import Field
+from pydantic import ConfigDict, Field
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
+
+    model_config = ConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore",
+    )
 
     # API Configuration
     api_version: str = Field(default="v2.0", description="Beacon API version")
@@ -109,14 +116,6 @@ class Settings(BaseSettings):
         default=["*"],
         description="Allowed headers for CORS",
     )
-
-    class Config:
-        """Pydantic configuration."""
-
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        case_sensitive = False
-        extra = "ignore"
 
 
 @lru_cache
