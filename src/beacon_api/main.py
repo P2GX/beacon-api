@@ -1,11 +1,11 @@
 """Main FastAPI application for Beacon v2 API."""
 
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import Any, AsyncGenerator
+from typing import Any
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 
 from beacon_api import __version__
 from beacon_api.api import (
@@ -16,8 +16,8 @@ from beacon_api.api import (
     g_variations_router,
     individuals_router,
     info_router,
+    monitor_router,
     runs_router,
-    monitor_router
 )
 from beacon_api.core.config import get_settings
 

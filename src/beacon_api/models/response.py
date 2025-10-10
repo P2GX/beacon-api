@@ -1,6 +1,6 @@
 """Beacon v2 response models."""
 
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -12,20 +12,20 @@ class BeaconOrganization(BaseModel):
 
     id: str = Field(..., description="Organization identifier")
     name: str = Field(..., description="Organization name")
-    description: Optional[str] = Field(
+    description: str | None = Field(
         default=None,
         description="Organization description",
     )
-    address: Optional[str] = Field(default=None, description="Organization address")
-    welcome_url: Optional[str] = Field(
+    address: str | None = Field(default=None, description="Organization address")
+    welcome_url: str | None = Field(
         default=None,
         description="Welcome page URL",
     )
-    contact_url: Optional[str] = Field(
+    contact_url: str | None = Field(
         default=None,
         description="Contact information URL",
     )
-    logo_url: Optional[str] = Field(default=None, description="Organization logo URL")
+    logo_url: str | None = Field(default=None, description="Organization logo URL")
 
 
 class BeaconInformationalResponse(BaseModel):
@@ -43,27 +43,27 @@ class BeaconInformationalResponse(BaseModel):
         ...,
         description="Organization running this Beacon",
     )
-    description: Optional[str] = Field(
+    description: str | None = Field(
         default=None,
         description="Beacon description",
     )
-    version: Optional[str] = Field(
+    version: str | None = Field(
         default=None,
         description="Beacon implementation version",
     )
-    welcome_url: Optional[str] = Field(
+    welcome_url: str | None = Field(
         default=None,
         description="Welcome page URL",
     )
-    alternative_url: Optional[str] = Field(
+    alternative_url: str | None = Field(
         default=None,
         description="Alternative URL for this Beacon",
     )
-    create_date_time: Optional[str] = Field(
+    create_date_time: str | None = Field(
         default=None,
         description="Beacon creation date and time",
     )
-    update_date_time: Optional[str] = Field(
+    update_date_time: str | None = Field(
         default=None,
         description="Beacon last update date and time",
     )
@@ -89,7 +89,7 @@ class BeaconSummaryResults(BaseModel):
         ...,
         description="Whether any results were found",
     )
-    num_total_results: Optional[int] = Field(
+    num_total_results: int | None = Field(
         default=None,
         description="Total number of results",
     )
@@ -105,19 +105,19 @@ class ResultsetInstance(BaseModel):
         examples=["dataset", "individual", "biosample"],
     )
     exists: bool = Field(..., description="Whether results exist in this set")
-    result_count: Optional[int] = Field(
+    result_count: int | None = Field(
         default=None,
         description="Number of results in this set",
     )
-    results: Optional[list[dict[str, Any]]] = Field(
+    results: list[dict[str, Any]] | None = Field(
         default=None,
         description="Actual result records",
     )
-    info: Optional[dict[str, Any]] = Field(
+    info: dict[str, Any] | None = Field(
         default=None,
         description="Additional information about the result set",
     )
-    results_handover: Optional[list[dict[str, Any]]] = Field(
+    results_handover: list[dict[str, Any]] | None = Field(
         default=None,
         description="Handover information for accessing full results",
     )
@@ -137,7 +137,7 @@ class BeaconResponseMeta(BaseModel):
         ...,
         description="Summary of the received request",
     )
-    returned_schemas: Optional[list[SchemaReference]] = Field(
+    returned_schemas: list[SchemaReference] | None = Field(
         default=None,
         description="Schemas used in the response",
     )
@@ -151,11 +151,11 @@ class BeaconBooleanResponse(BaseModel):
         ...,
         description="Summary of query results",
     )
-    info: Optional[dict[str, Any]] = Field(
+    info: dict[str, Any] | None = Field(
         default=None,
         description="Additional information",
     )
-    beacon_error: Optional[BeaconError] = Field(
+    beacon_error: BeaconError | None = Field(
         default=None,
         description="Error information if query failed",
     )
@@ -169,11 +169,11 @@ class BeaconCountResponse(BaseModel):
         ...,
         description="Summary of query results",
     )
-    info: Optional[dict[str, Any]] = Field(
+    info: dict[str, Any] | None = Field(
         default=None,
         description="Additional information",
     )
-    beacon_error: Optional[BeaconError] = Field(
+    beacon_error: BeaconError | None = Field(
         default=None,
         description="Error information if query failed",
     )
@@ -187,15 +187,15 @@ class BeaconResultsetsResponse(BaseModel):
         ...,
         description="Summary of query results",
     )
-    response: Optional[list[ResultsetInstance]] = Field(
+    response: list[ResultsetInstance] | None = Field(
         default=None,
         description="Result sets",
     )
-    info: Optional[dict[str, Any]] = Field(
+    info: dict[str, Any] | None = Field(
         default=None,
         description="Additional information",
     )
-    beacon_error: Optional[BeaconError] = Field(
+    beacon_error: BeaconError | None = Field(
         default=None,
         description="Error information if query failed",
     )

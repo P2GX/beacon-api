@@ -5,15 +5,12 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, Query
 
 from beacon_api.api.dependencies import IndividualServiceDep
-from beacon_api.models.common import Pagination
 from beacon_api.models.entities import Individual
 from beacon_api.models.request import (
     BeaconRequestBody,
     RequestedGranularity,
 )
 from beacon_api.models.response import (
-    BeaconBooleanResponse,
-    BeaconCountResponse,
     BeaconResponseMeta,
     BeaconResultsetsResponse,
     BeaconSummaryResults,

@@ -1,7 +1,7 @@
 """Beacon v2 request models."""
 
 from enum import Enum
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -22,7 +22,7 @@ class OntologyFilter(BaseModel):
         description="Ontology term ID",
         examples=["HP:0001250", "NCIT:C3058"],
     )
-    scope: Optional[str] = Field(
+    scope: str | None = Field(
         default=None,
         description="Scope of the ontology filter",
         examples=["individuals", "biosamples"],
@@ -31,7 +31,7 @@ class OntologyFilter(BaseModel):
         default=False,
         description="Include descendant terms in the query",
     )
-    similarity: Optional[str] = Field(
+    similarity: str | None = Field(
         default=None,
         description="Similarity matching method",
         examples=["exact", "high", "medium", "low"],
@@ -46,21 +46,21 @@ class FilteringTerm(BaseModel):
         description="Type of the filter",
         examples=["ontology", "alphanumeric", "numeric"],
     )
-    id: Optional[str] = Field(
+    id: str | None = Field(
         default=None,
         description="Filter ID (for ontology filters)",
         examples=["HP:0001250"],
     )
-    operator: Optional[str] = Field(
+    operator: str | None = Field(
         default=None,
         description="Comparison operator",
         examples=["=", ">", "<", ">=", "<="],
     )
-    value: Optional[Any] = Field(
+    value: Any | None = Field(
         default=None,
         description="Filter value",
     )
-    scope: Optional[str] = Field(
+    scope: str | None = Field(
         default=None,
         description="Scope of the filter",
         examples=["individuals", "biosamples"],
@@ -74,12 +74,12 @@ class BeaconRequestParameters(BaseModel):
         default=RequestedGranularity.BOOLEAN,
         description="Requested granularity of the response",
     )
-    include_resultset_responses: Optional[str] = Field(
+    include_resultset_responses: str | None = Field(
         default="HIT",
         description="Defines the level of detail in the response",
         examples=["HIT", "ALL", "MISS", "NONE"],
     )
-    pagination: Optional[dict[str, int]] = Field(
+    pagination: dict[str, int] | None = Field(
         default=None,
         description="Pagination parameters",
         examples=[{"skip": 0, "limit": 10}],
@@ -89,47 +89,47 @@ class BeaconRequestParameters(BaseModel):
 class BeaconQuery(BaseModel):
     """Beacon query parameters for genomic variations."""
 
-    assembly_id: Optional[str] = Field(
+    assembly_id: str | None = Field(
         default=None,
         description="Assembly identifier (GRC notation)",
         examples=["GRCh38", "GRCh37"],
     )
-    reference_name: Optional[str] = Field(
+    reference_name: str | None = Field(
         default=None,
         description="Reference sequence name",
         examples=["1", "22", "X", "Y", "MT", "chr1"],
     )
-    reference_bases: Optional[str] = Field(
+    reference_bases: str | None = Field(
         default=None,
         description="Reference bases",
         examples=["A", "T", "C", "G"],
     )
-    alternate_bases: Optional[str] = Field(
+    alternate_bases: str | None = Field(
         default=None,
         description="Alternate bases",
         examples=["A", "T", "C", "G"],
     )
-    start: Optional[list[int]] = Field(
+    start: list[int] | None = Field(
         default=None,
         description="Start position(s) in 0-based coordinates",
         examples=[[100000, 200000]],
     )
-    end: Optional[list[int]] = Field(
+    end: list[int] | None = Field(
         default=None,
         description="End position(s) in 0-based coordinates",
         examples=[[100100, 200100]],
     )
-    variant_type: Optional[str] = Field(
+    variant_type: str | None = Field(
         default=None,
         description="Type of variant",
         examples=["SNP", "DEL", "INS", "DUP", "INV", "CNV"],
     )
-    variant_min_length: Optional[int] = Field(
+    variant_min_length: int | None = Field(
         default=None,
         description="Minimum length of the variant",
         ge=0,
     )
-    variant_max_length: Optional[int] = Field(
+    variant_max_length: int | None = Field(
         default=None,
         description="Maximum length of the variant",
         ge=0,
@@ -143,11 +143,11 @@ class BeaconRequestBody(BaseModel):
         default_factory=BeaconRequestParameters,
         description="Request metadata and parameters",
     )
-    query: Optional[BeaconQuery] = Field(
+    query: BeaconQuery | None = Field(
         default=None,
         description="Query parameters",
     )
-    filters: Optional[list[FilteringTerm]] = Field(
+    filters: list[FilteringTerm] | None = Field(
         default=None,
         description="Filtering terms to apply",
     )

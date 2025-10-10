@@ -1,7 +1,6 @@
 """Application configuration using Pydantic Settings."""
 
 from functools import lru_cache
-from typing import Optional
 
 from pydantic import Field
 from pydantic_settings import BaseSettings
@@ -26,27 +25,27 @@ class Settings(BaseSettings):
         default="Beacon Skeleton",
         description="Human-readable name for this Beacon",
     )
-    beacon_description: Optional[str] = Field(
+    beacon_description: str | None = Field(
         default="A skeleton implementation of the GA4GH Beacon v2 API",
         description="Description of this Beacon",
     )
-    beacon_version: Optional[str] = Field(
+    beacon_version: str | None = Field(
         default="0.1.0",
         description="Version of this Beacon implementation",
     )
-    beacon_welcome_url: Optional[str] = Field(
+    beacon_welcome_url: str | None = Field(
         default=None,
         description="Welcome page URL",
     )
-    beacon_alternative_url: Optional[str] = Field(
+    beacon_alternative_url: str | None = Field(
         default=None,
         description="Alternative URL for this Beacon",
     )
-    beacon_create_date_time: Optional[str] = Field(
+    beacon_create_date_time: str | None = Field(
         default=None,
         description="Beacon creation date and time (ISO 8601 format)",
     )
-    beacon_update_date_time: Optional[str] = Field(
+    beacon_update_date_time: str | None = Field(
         default=None,
         description="Beacon last update date and time (ISO 8601 format)",
     )
@@ -60,23 +59,23 @@ class Settings(BaseSettings):
         default="Example Organization",
         description="Organization name",
     )
-    organization_description: Optional[str] = Field(
+    organization_description: str | None = Field(
         default="An example organization running a Beacon",
         description="Organization description",
     )
-    organization_address: Optional[str] = Field(
+    organization_address: str | None = Field(
         default=None,
         description="Organization address",
     )
-    organization_welcome_url: Optional[str] = Field(
+    organization_welcome_url: str | None = Field(
         default=None,
         description="Organization welcome page URL",
     )
-    organization_contact_url: Optional[str] = Field(
+    organization_contact_url: str | None = Field(
         default=None,
         description="Organization contact information URL",
     )
-    organization_logo_url: Optional[str] = Field(
+    organization_logo_url: str | None = Field(
         default=None,
         description="Organization logo URL",
     )
@@ -120,7 +119,7 @@ class Settings(BaseSettings):
         extra = "ignore"
 
 
-@lru_cache()
+@lru_cache
 def get_settings() -> Settings:
     """
     Get application settings (cached).

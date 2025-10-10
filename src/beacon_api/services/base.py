@@ -8,7 +8,7 @@ provide concrete implementations for their database/storage backend.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any
 
 from beacon_api.models.entities import (
     Analysis,
@@ -87,7 +87,7 @@ class IndividualService(ABC):
     """Service interface for Individual entity operations."""
 
     @abstractmethod
-    async def get_by_id(self, individual_id: str) -> Optional[Individual]:
+    async def get_by_id(self, individual_id: str) -> Individual | None:
         """
         Retrieve an individual by ID.
 
@@ -107,7 +107,7 @@ class IndividualService(ABC):
         self,
         skip: int = 0,
         limit: int = 10,
-        filters: Optional[list[FilteringTerm]] = None,
+        filters: list[FilteringTerm] | None = None,
     ) -> list[Individual]:
         """
         List individuals with optional filtering and pagination.
@@ -149,7 +149,7 @@ class BiosampleService(ABC):
     """Service interface for Biosample entity operations."""
 
     @abstractmethod
-    async def get_by_id(self, biosample_id: str) -> Optional[Biosample]:
+    async def get_by_id(self, biosample_id: str) -> Biosample | None:
         """
         Retrieve a biosample by ID.
 
@@ -169,7 +169,7 @@ class BiosampleService(ABC):
         self,
         skip: int = 0,
         limit: int = 10,
-        filters: Optional[list[FilteringTerm]] = None,
+        filters: list[FilteringTerm] | None = None,
     ) -> list[Biosample]:
         """
         List biosamples with optional filtering and pagination.
@@ -211,7 +211,7 @@ class GenomicVariationService(ABC):
     """Service interface for GenomicVariation entity operations."""
 
     @abstractmethod
-    async def get_by_id(self, variation_id: str) -> Optional[GenomicVariation]:
+    async def get_by_id(self, variation_id: str) -> GenomicVariation | None:
         """
         Retrieve a genomic variation by ID.
 
@@ -231,7 +231,7 @@ class GenomicVariationService(ABC):
         self,
         skip: int = 0,
         limit: int = 10,
-        filters: Optional[list[FilteringTerm]] = None,
+        filters: list[FilteringTerm] | None = None,
     ) -> list[GenomicVariation]:
         """
         List genomic variations with optional filtering and pagination.
@@ -273,7 +273,7 @@ class AnalysisService(ABC):
     """Service interface for Analysis entity operations."""
 
     @abstractmethod
-    async def get_by_id(self, analysis_id: str) -> Optional[Analysis]:
+    async def get_by_id(self, analysis_id: str) -> Analysis | None:
         """
         Retrieve an analysis by ID.
 
@@ -293,7 +293,7 @@ class AnalysisService(ABC):
         self,
         skip: int = 0,
         limit: int = 10,
-        filters: Optional[list[FilteringTerm]] = None,
+        filters: list[FilteringTerm] | None = None,
     ) -> list[Analysis]:
         """
         List analyses with optional filtering and pagination.
@@ -316,7 +316,7 @@ class CohortService(ABC):
     """Service interface for Cohort entity operations."""
 
     @abstractmethod
-    async def get_by_id(self, cohort_id: str) -> Optional[Cohort]:
+    async def get_by_id(self, cohort_id: str) -> Cohort | None:
         """
         Retrieve a cohort by ID.
 
@@ -336,7 +336,7 @@ class CohortService(ABC):
         self,
         skip: int = 0,
         limit: int = 10,
-        filters: Optional[list[FilteringTerm]] = None,
+        filters: list[FilteringTerm] | None = None,
     ) -> list[Cohort]:
         """
         List cohorts with optional filtering and pagination.
@@ -359,7 +359,7 @@ class DatasetService(ABC):
     """Service interface for Dataset entity operations."""
 
     @abstractmethod
-    async def get_by_id(self, dataset_id: str) -> Optional[Dataset]:
+    async def get_by_id(self, dataset_id: str) -> Dataset | None:
         """
         Retrieve a dataset by ID.
 
@@ -400,7 +400,7 @@ class RunService(ABC):
     """Service interface for Run entity operations."""
 
     @abstractmethod
-    async def get_by_id(self, run_id: str) -> Optional[Run]:
+    async def get_by_id(self, run_id: str) -> Run | None:
         """
         Retrieve a run by ID.
 
@@ -420,7 +420,7 @@ class RunService(ABC):
         self,
         skip: int = 0,
         limit: int = 10,
-        filters: Optional[list[FilteringTerm]] = None,
+        filters: list[FilteringTerm] | None = None,
     ) -> list[Run]:
         """
         List runs with optional filtering and pagination.
