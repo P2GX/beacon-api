@@ -56,8 +56,8 @@ def create_app() -> FastAPI:
         description="A skeleton implementation of the GA4GH Beacon v2 API specification",
         version=__version__,
         lifespan=lifespan,
-        docs_url="/docs",
-        redoc_url="/redoc",
+        docs_url="/api/docs",
+        redoc_url="/api/redoc",
         openapi_url="/openapi.json",
     )
 
@@ -87,7 +87,7 @@ def create_app() -> FastAPI:
         return {
             "message": "Beacon v2 API",
             "version": __version__,
-            "docs": "/docs",
+            "docs": "/api/docs",
             "info": "/api/info",
             "monitor": "/api/monitor/health",
         }

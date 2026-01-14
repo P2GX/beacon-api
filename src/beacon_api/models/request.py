@@ -1,7 +1,6 @@
 """Beacon v2 request models."""
 
 from enum import Enum
-from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -15,55 +14,59 @@ class RequestedGranularity(str, Enum):
 
 
 class OntologyFilter(BaseModel):
-    """Ontology-based filter."""
+    """Ontology-based filter for Beacon v2.
+
+    Used for bio-ontology term queries identified by CURIE format.
+    """
 
     id: str = Field(
         ...,
-        description="Ontology term ID",
-        examples=["HP:0001250", "NCIT:C3058"],
+        description="Ontology term ID in CURIE format",
+        examples=["HP:0001250", "NCIT:C3058", "HP:0100526"],
     )
-    scope: str | None = Field(
-        default=None,
-        description="Scope of the ontology filter",
-        examples=["individuals", "biosamples"],
-    )
-    include_descendant_terms: bool = Field(
-        default=False,
-        description="Include descendant terms in the query",
+    includeDescendantTerms: bool = Field(
+        default=True,
+        description="Include descendant terms in the query (default: true)",
     )
     similarity: str | None = Field(
         default=None,
         description="Similarity matching method",
-        examples=["exact", "high", "medium", "low"],
+        examples=["high", "medium", "low"],
     )
 
 
 class FilteringTerm(BaseModel):
-    """Generic filtering term for Beacon queries."""
+    """Filtering term for Beacon v2 queries.
 
-    type: str = Field(
+    Supports three filter types:
+    1. Ontology filters: Only 'id' required, optionally with includeDescendantTerms/similarity
+    2. Alphanumeric/Numeric filters: Requires 'id', 'operator', and 'value'
+    3. Custom filters: Locally-defined with unique identifiers
+    """
+
+    id: str = Field(
         ...,
-        description="Type of the filter",
-        examples=["ontology", "alphanumeric", "numeric"],
-    )
-    id: str | None = Field(
-        default=None,
-        description="Filter ID (for ontology filters)",
-        examples=["HP:0001250"],
+        description="Filter identifier (CURIE for ontology, field ID for alphanumeric)",
+        examples=["HP:0001250", "PATO:0000011", "NCIT:C6975"],
     )
     operator: str | None = Field(
         default=None,
-        description="Comparison operator",
-        examples=["=", ">", "<", ">=", "<="],
+        description="Comparison operator for alphanumeric/numeric filters",
+        examples=["=", ">", "<", "!", ">=", "<="],
     )
-    value: Any | None = Field(
+    value: str | int | float | None = Field(
         default=None,
-        description="Filter value",
+        description="Filter value (ISO8601 for dates, wildcards % supported)",
+        examples=["P70Y", "cancer", 100, "%breast%"],
     )
-    scope: str | None = Field(
+    includeDescendantTerms: bool | None = Field(
         default=None,
-        description="Scope of the filter",
-        examples=["individuals", "biosamples"],
+        description="For ontology filters: include descendant terms (default: true)",
+    )
+    similarity: str | None = Field(
+        default=None,
+        description="For ontology filters: similarity level",
+        examples=["high", "medium", "low"],
     )
 
 

@@ -8,7 +8,6 @@ provide concrete implementations for their database/storage backend.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any
 
 from beacon_api.models.entities import (
     Analysis,
@@ -19,30 +18,11 @@ from beacon_api.models.entities import (
     Individual,
     Run,
 )
-from beacon_api.models.request import BeaconRequestBody, FilteringTerm
+from beacon_api.models.request import BeaconRequestBody
 
 
 class BaseBeaconService(ABC):
     """Base interface for all Beacon services."""
-
-    @abstractmethod
-    async def query(
-        self,
-        request_body: BeaconRequestBody,
-    ) -> dict[str, Any]:
-        """
-        Execute a Beacon query.
-
-        Args:
-            request_body: Complete Beacon request including query and filters
-
-        Returns:
-            Dictionary containing query results
-
-        Raises:
-            NotImplementedError: Must be implemented by subclass
-        """
-        raise NotImplementedError
 
     @abstractmethod
     async def count(
@@ -61,7 +41,7 @@ class BaseBeaconService(ABC):
         Raises:
             NotImplementedError: Must be implemented by subclass
         """
-        raise NotImplementedError
+        pass
 
     @abstractmethod
     async def exists(
@@ -80,10 +60,10 @@ class BaseBeaconService(ABC):
         Raises:
             NotImplementedError: Must be implemented by subclass
         """
-        raise NotImplementedError
+        pass
 
 
-class IndividualService(ABC):
+class IndividualService(BaseBeaconService):
     """Service interface for Individual entity operations."""
 
     @abstractmethod
@@ -96,29 +76,6 @@ class IndividualService(ABC):
 
         Returns:
             Individual object if found, None otherwise
-
-        Raises:
-            NotImplementedError: Must be implemented by subclass
-        """
-        raise NotImplementedError
-
-    @abstractmethod
-    async def list(
-        self,
-        skip: int = 0,
-        limit: int = 10,
-        filters: list[FilteringTerm] | None = None,
-    ) -> list[Individual]:
-        """
-        List individuals with optional filtering and pagination.
-
-        Args:
-            skip: Number of records to skip
-            limit: Maximum number of records to return
-            filters: Optional filtering terms
-
-        Returns:
-            List of Individual objects
 
         Raises:
             NotImplementedError: Must be implemented by subclass
@@ -145,7 +102,7 @@ class IndividualService(ABC):
         raise NotImplementedError
 
 
-class BiosampleService(ABC):
+class BiosampleService(BaseBeaconService):
     """Service interface for Biosample entity operations."""
 
     @abstractmethod
@@ -158,29 +115,6 @@ class BiosampleService(ABC):
 
         Returns:
             Biosample object if found, None otherwise
-
-        Raises:
-            NotImplementedError: Must be implemented by subclass
-        """
-        raise NotImplementedError
-
-    @abstractmethod
-    async def list(
-        self,
-        skip: int = 0,
-        limit: int = 10,
-        filters: list[FilteringTerm] | None = None,
-    ) -> list[Biosample]:
-        """
-        List biosamples with optional filtering and pagination.
-
-        Args:
-            skip: Number of records to skip
-            limit: Maximum number of records to return
-            filters: Optional filtering terms
-
-        Returns:
-            List of Biosample objects
 
         Raises:
             NotImplementedError: Must be implemented by subclass
@@ -207,7 +141,7 @@ class BiosampleService(ABC):
         raise NotImplementedError
 
 
-class GenomicVariationService(ABC):
+class GenomicVariationService(BaseBeaconService):
     """Service interface for GenomicVariation entity operations."""
 
     @abstractmethod
@@ -220,29 +154,6 @@ class GenomicVariationService(ABC):
 
         Returns:
             GenomicVariation object if found, None otherwise
-
-        Raises:
-            NotImplementedError: Must be implemented by subclass
-        """
-        raise NotImplementedError
-
-    @abstractmethod
-    async def list(
-        self,
-        skip: int = 0,
-        limit: int = 10,
-        filters: list[FilteringTerm] | None = None,
-    ) -> list[GenomicVariation]:
-        """
-        List genomic variations with optional filtering and pagination.
-
-        Args:
-            skip: Number of records to skip
-            limit: Maximum number of records to return
-            filters: Optional filtering terms
-
-        Returns:
-            List of GenomicVariation objects
 
         Raises:
             NotImplementedError: Must be implemented by subclass
@@ -269,7 +180,7 @@ class GenomicVariationService(ABC):
         raise NotImplementedError
 
 
-class AnalysisService(ABC):
+class AnalysisService(BaseBeaconService):
     """Service interface for Analysis entity operations."""
 
     @abstractmethod
@@ -289,22 +200,18 @@ class AnalysisService(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def list(
+    async def query(
         self,
-        skip: int = 0,
-        limit: int = 10,
-        filters: list[FilteringTerm] | None = None,
+        request_body: BeaconRequestBody,
     ) -> list[Analysis]:
         """
-        List analyses with optional filtering and pagination.
+        Query analyses based on Beacon request.
 
         Args:
-            skip: Number of records to skip
-            limit: Maximum number of records to return
-            filters: Optional filtering terms
+            request_body: Complete Beacon request including query and filters
 
         Returns:
-            List of Analysis objects
+            List of matching Analysis objects
 
         Raises:
             NotImplementedError: Must be implemented by subclass
@@ -312,7 +219,7 @@ class AnalysisService(ABC):
         raise NotImplementedError
 
 
-class CohortService(ABC):
+class CohortService(BaseBeaconService):
     """Service interface for Cohort entity operations."""
 
     @abstractmethod
@@ -332,22 +239,18 @@ class CohortService(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def list(
+    async def query(
         self,
-        skip: int = 0,
-        limit: int = 10,
-        filters: list[FilteringTerm] | None = None,
+        request_body: BeaconRequestBody,
     ) -> list[Cohort]:
         """
-        List cohorts with optional filtering and pagination.
+        Query cohorts based on Beacon request.
 
         Args:
-            skip: Number of records to skip
-            limit: Maximum number of records to return
-            filters: Optional filtering terms
+            request_body: Complete Beacon request including query and filters
 
         Returns:
-            List of Cohort objects
+            List of matching Cohort objects
 
         Raises:
             NotImplementedError: Must be implemented by subclass
@@ -355,7 +258,7 @@ class CohortService(ABC):
         raise NotImplementedError
 
 
-class DatasetService(ABC):
+class DatasetService(BaseBeaconService):
     """Service interface for Dataset entity operations."""
 
     @abstractmethod
@@ -375,20 +278,18 @@ class DatasetService(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def list(
+    async def query(
         self,
-        skip: int = 0,
-        limit: int = 10,
+        request_body: BeaconRequestBody,
     ) -> list[Dataset]:
         """
-        List datasets with optional pagination.
+        Query datasets based on Beacon request.
 
         Args:
-            skip: Number of records to skip
-            limit: Maximum number of records to return
+            request_body: Complete Beacon request including query and filters
 
         Returns:
-            List of Dataset objects
+            List of matching Dataset objects
 
         Raises:
             NotImplementedError: Must be implemented by subclass
@@ -396,7 +297,7 @@ class DatasetService(ABC):
         raise NotImplementedError
 
 
-class RunService(ABC):
+class RunService(BaseBeaconService):
     """Service interface for Run entity operations."""
 
     @abstractmethod
@@ -416,22 +317,18 @@ class RunService(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def list(
+    async def query(
         self,
-        skip: int = 0,
-        limit: int = 10,
-        filters: list[FilteringTerm] | None = None,
+        request_body: BeaconRequestBody,
     ) -> list[Run]:
         """
-        List runs with optional filtering and pagination.
+        Query runs based on Beacon request.
 
         Args:
-            skip: Number of records to skip
-            limit: Maximum number of records to return
-            filters: Optional filtering terms
+            request_body: Complete Beacon request including query and filters
 
         Returns:
-            List of Run objects
+            List of matching Run objects
 
         Raises:
             NotImplementedError: Must be implemented by subclass

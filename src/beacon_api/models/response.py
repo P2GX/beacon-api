@@ -31,13 +31,20 @@ class BeaconOrganization(BaseModel):
 class BeaconInformationalResponse(BaseModel):
     """Beacon informational metadata."""
 
+    model_config = {"populate_by_name": True}
+
     id: str = Field(..., description="Beacon identifier")
     name: str = Field(..., description="Beacon name")
-    api_version: str = Field(..., description="Beacon API version", examples=["v2.0"])
+    api_version: str = Field(
+        ...,
+        alias="apiVersion",
+        description="Beacon API version",
+        examples=["v2.0"],
+    )
     environment: str = Field(
         ...,
         description="Beacon environment",
-        examples=["production", "development", "staging"],
+        examples=["prod", "test", "dev", "staging"],
     )
     organization: BeaconOrganization = Field(
         ...,
@@ -53,18 +60,22 @@ class BeaconInformationalResponse(BaseModel):
     )
     welcome_url: str | None = Field(
         default=None,
+        alias="welcomeUrl",
         description="Welcome page URL",
     )
     alternative_url: str | None = Field(
         default=None,
+        alias="alternativeUrl",
         description="Alternative URL for this Beacon",
     )
     create_date_time: str | None = Field(
         default=None,
+        alias="createDateTime",
         description="Beacon creation date and time",
     )
     update_date_time: str | None = Field(
         default=None,
+        alias="updateDateTime",
         description="Beacon last update date and time",
     )
 

@@ -2,14 +2,14 @@
 
 from functools import lru_cache
 
-from pydantic import ConfigDict, Field
-from pydantic_settings import BaseSettings
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
-    model_config = ConfigDict(
+    model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=False,
@@ -19,8 +19,8 @@ class Settings(BaseSettings):
     # API Configuration
     api_version: str = Field(default="v2.0", description="Beacon API version")
     environment: str = Field(
-        default="development",
-        description="Environment: production, development, or staging",
+        default="dev",
+        description="Environment: prod, test, dev, or staging",
     )
 
     # Beacon Information
