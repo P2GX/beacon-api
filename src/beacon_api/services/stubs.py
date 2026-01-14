@@ -76,9 +76,7 @@ class StubGenomicVariationService(GenomicVariationService):
         """Get genomic variation by ID - not implemented."""
         raise NotImplementedError("GenomicVariationService not implemented")
 
-    async def query(
-        self, request_body: BeaconRequestBody
-    ) -> list[GenomicVariation]:
+    async def query(self, request_body: BeaconRequestBody) -> list[GenomicVariation]:
         """Query genomic variations - not implemented."""
         raise NotImplementedError("GenomicVariationService not implemented")
 

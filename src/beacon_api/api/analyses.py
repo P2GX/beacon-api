@@ -119,6 +119,7 @@ async def list_analyses(
             "beacon_error": None,
         }
 
+
 @router.post("", response_model=BeaconResultsetsResponse)
 async def query_analyses(
     request_body: BeaconRequestBody,

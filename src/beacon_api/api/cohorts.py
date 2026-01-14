@@ -119,6 +119,7 @@ async def list_cohorts(
             "beacon_error": None,
         }
 
+
 @router.post("", response_model=BeaconResultsetsResponse)
 async def query_cohorts(
     request_body: BeaconRequestBody,

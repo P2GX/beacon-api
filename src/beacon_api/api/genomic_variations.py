@@ -122,6 +122,7 @@ async def list_variations(
             "beacon_error": None,
         }
 
+
 @router.post("", response_model=BeaconResultsetsResponse)
 async def query_genomic_variations(
     request_body: BeaconRequestBody,
