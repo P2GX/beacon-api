@@ -86,10 +86,10 @@ jobs:
     name: Build Docker Image
     runs-on: ubuntu-latest
     services:
-          registry:
-            image: registry:3
-            ports:
-              - 5000:5000
+      registry:
+        image: registry:3
+        ports:
+          - 5000:5000
 
     steps:
       - uses: actions/checkout@v4
