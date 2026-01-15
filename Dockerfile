@@ -15,7 +15,7 @@ COPY pyproject.toml README.md ./
 # Create virtual environment and install dependencies
 RUN uv venv /opt/venv && \
     . /opt/venv/bin/activate && \
-    uv pip install --no-cache -e .
+    uv pip install --no-cache .
 
 # Stage 2: Runtime
 FROM python:3.12-slim
