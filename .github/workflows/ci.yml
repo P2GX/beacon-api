@@ -111,6 +111,12 @@ jobs:
       - name: Test Docker image
         run: |
           docker run -d -p 8000:8000 --name beacon-test localhost:5000/beacon-api:latest
-          sleep 5
-          curl --fail http://localhost:8000/health || exit 1
+          echo "Waiting for container to be ready..."
+          sleep 10
+          echo "Testing health endpoint..."
+          curl --fail --retry 3 --retry-delay 2 --retry-all-errors http://localhost:8000/api/monitor/health || {
+            echo "Health check failed. Container logs:"
+            docker logs beacon-test
+            exit 1
+          }
           docker stop beacon-test
