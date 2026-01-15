@@ -9,13 +9,15 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 # Set working directory
 WORKDIR /app
 
-# Copy dependency files
+# Copy dependency files and source code
 COPY pyproject.toml README.md ./
+COPY src/ ./src/
 
 # Create virtual environment and install dependencies
 RUN uv venv /opt/venv && \
     . /opt/venv/bin/activate && \
-    uv pip install --no-cache .
+    uv pip install --no-cache . && \
+    rm -rf /app/src /app/pyproject.toml /app/README.md
 
 # Stage 2: Runtime
 FROM python:3.12-slim
@@ -35,9 +37,6 @@ COPY --from=builder --chown=beacon:beacon /opt/venv /opt/venv
 
 # Set working directory
 WORKDIR /app
-
-# Copy application code
-COPY --chown=beacon:beacon src/ ./src/
 
 # Switch to non-root user
 USER beacon
