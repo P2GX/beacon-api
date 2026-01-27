@@ -1,11 +1,11 @@
 """Main FastAPI application for Beacon v2 API."""
 
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import Any, AsyncGenerator
+from typing import Any
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 
 from beacon_api import __version__
 from beacon_api.api import (
@@ -16,8 +16,8 @@ from beacon_api.api import (
     g_variations_router,
     individuals_router,
     info_router,
+    monitor_router,
     runs_router,
-    monitor_router
 )
 from beacon_api.core.config import get_settings
 
@@ -56,8 +56,8 @@ def create_app() -> FastAPI:
         description="A skeleton implementation of the GA4GH Beacon v2 API specification",
         version=__version__,
         lifespan=lifespan,
-        docs_url="/docs",
-        redoc_url="/redoc",
+        docs_url="/api/docs",
+        redoc_url="/api/redoc",
         openapi_url="/openapi.json",
     )
 
@@ -87,7 +87,7 @@ def create_app() -> FastAPI:
         return {
             "message": "Beacon v2 API",
             "version": __version__,
-            "docs": "/docs",
+            "docs": "/api/docs",
             "info": "/api/info",
             "monitor": "/api/monitor/health",
         }

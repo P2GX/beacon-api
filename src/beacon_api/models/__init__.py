@@ -5,6 +5,15 @@ from beacon_api.models.common import (
     ListingQuery,
     Pagination,
 )
+from beacon_api.models.entities import (
+    Analysis,
+    Biosample,
+    Cohort,
+    Dataset,
+    GenomicVariation,
+    Individual,
+    Run,
+)
 from beacon_api.models.request import (
     BeaconQuery,
     BeaconRequestBody,
@@ -14,20 +23,11 @@ from beacon_api.models.request import (
     RequestedGranularity,
 )
 from beacon_api.models.response import (
-    BeaconInfoResponse,
-    BeaconResultsetsResponse,
     BeaconBooleanResponse,
     BeaconCountResponse,
+    BeaconInfoResponse,
+    BeaconResultsetsResponse,
     ResultsetInstance,
-)
-from beacon_api.models.entities import (
-    Individual,
-    Biosample,
-    GenomicVariation,
-    Analysis,
-    Cohort,
-    Dataset,
-    Run,
 )
 
 __all__ = [

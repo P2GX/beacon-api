@@ -25,9 +25,9 @@ def test_root_endpoint(client: TestClient) -> None:
 
 def test_health_check(client: TestClient) -> None:
     """Test health check endpoint."""
-    response = client.get("/health")
+    response = client.get("/api/monitor/health")
     assert response.status_code == 200
-    assert response.json() == {"status": "healthy"}
+    assert response.json() == {"status": "ok"}
 
 
 def test_openapi_schema(client: TestClient) -> None:
@@ -42,6 +42,6 @@ def test_openapi_schema(client: TestClient) -> None:
 
 def test_docs_endpoint(client: TestClient) -> None:
     """Test interactive docs are accessible."""
-    response = client.get("/docs")
+    response = client.get("/api/docs")
     assert response.status_code == 200
     assert "text/html" in response.headers["content-type"]

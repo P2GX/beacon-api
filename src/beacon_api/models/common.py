@@ -1,6 +1,6 @@
 """Common Beacon v2 models and shared schemas."""
 
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -41,11 +41,11 @@ class Pagination(BaseModel):
 class ListingQuery(BaseModel):
     """Query parameters for listing endpoints."""
 
-    pagination: Optional[Pagination] = Field(
+    pagination: Pagination | None = Field(
         default=None,
         description="Pagination parameters",
     )
-    filters: Optional[list[dict[str, Any]]] = Field(
+    filters: list[dict[str, Any]] | None = Field(
         default=None,
         description="Filtering terms to apply",
     )
@@ -64,8 +64,10 @@ class SchemaReference(BaseModel):
         description="Version of the schema",
         examples=["2.0.0"],
     )
-    schema_url: Optional[str] = Field(
+    schema_url: str | None = Field(
         default=None,
         description="URL to the schema definition",
-        examples=["https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/individuals/defaultSchema.json"],
+        examples=[
+            "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/individuals/defaultSchema.json"
+        ],
     )

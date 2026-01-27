@@ -22,16 +22,17 @@ def test_get_beacon_info(client: TestClient) -> None:
     assert "meta" in data
     assert "response" in data
 
-    # Check meta structure
+    # Check meta structure (camelCase per Beacon v2 spec)
     meta = data["meta"]
-    assert "beacon_id" in meta
-    assert "api_version" in meta
+    assert "beaconId" in meta
+    assert "apiVersion" in meta
+    assert "returnedSchemas" in meta
 
-    # Check response structure
+    # Check response structure (camelCase per Beacon v2 spec)
     response_data = data["response"]
     assert "id" in response_data
     assert "name" in response_data
-    assert "api_version" in response_data
+    assert "apiVersion" in response_data
     assert "environment" in response_data
     assert "organization" in response_data
 

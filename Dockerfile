@@ -9,13 +9,15 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 # Set working directory
 WORKDIR /app
 
-# Copy dependency files
-COPY pyproject.toml ./
+# Copy dependency files and source code
+COPY pyproject.toml README.md ./
+COPY src/ ./src/
 
 # Create virtual environment and install dependencies
 RUN uv venv /opt/venv && \
     . /opt/venv/bin/activate && \
-    uv pip install --no-cache -e .
+    uv pip install --no-cache . && \
+    rm -rf /app/src /app/pyproject.toml /app/README.md
 
 # Stage 2: Runtime
 FROM python:3.12-slim
@@ -36,9 +38,6 @@ COPY --from=builder --chown=beacon:beacon /opt/venv /opt/venv
 # Set working directory
 WORKDIR /app
 
-# Copy application code
-COPY --chown=beacon:beacon src/ ./src/
-
 # Switch to non-root user
 USER beacon
 
@@ -47,7 +46,7 @@ EXPOSE 8000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/monitor/health')"
 
 # Run the application
 CMD ["uvicorn", "beacon_api.main:app", "--host", "0.0.0.0", "--port", "8000"]

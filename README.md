@@ -11,7 +11,7 @@ A production-ready implementation of the [GA4GH Beacon v2 API](https://github.co
 - ✅ **Production-ready** with Docker support and health checks
 - ✅ **CI/CD** with GitHub Actions (linting, testing, Docker builds)
 - ✅ **Configuration** using Pydantic Settings with environment variables
-- ✅ **Modern tooling** - uv, ruff, black, mypy
+- ✅ **Modern tooling** - uv, ruff, mypy
 
 ## Architecture
 
@@ -215,9 +215,9 @@ services:
 
 ### Code Quality
 
-Format code with black:
+Format code with ruff:
 ```bash
-black src/ tests/
+ruff format src/ tests/
 ```
 
 Lint with ruff:
