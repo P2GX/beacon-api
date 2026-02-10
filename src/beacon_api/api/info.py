@@ -63,4 +63,4 @@ async def get_beacon_info() -> dict[str, Any]:
         "returnedSchemas": [],
     }
 
-    return {"meta": meta, "response": response.model_dump(by_alias=True)}
+    return {"meta": meta, "response": response.model_dump(by_alias=True, exclude_none=True)}
