@@ -137,37 +137,70 @@ class ResultsetInstance(BaseModel):
 class BeaconResponseMeta(BaseModel):
     """Beacon response metadata."""
 
-    beacon_id: str = Field(..., description="Beacon identifier")
-    api_version: str = Field(..., description="Beacon API version")
+    model_config = {"populate_by_name": True}
+
+    beacon_id: str = Field(..., alias="beaconId", description="Beacon identifier")
+    api_version: str = Field(..., alias="apiVersion", description="Beacon API version")
     returned_granularity: str = Field(
         ...,
+        alias="returnedGranularity",
         description="Granularity of the returned data",
         examples=["boolean", "count", "record"],
     )
     received_request_summary: dict[str, Any] = Field(
         ...,
+        alias="receivedRequestSummary",
         description="Summary of the received request",
     )
     returned_schemas: list[SchemaReference] | None = Field(
         default=None,
+        alias="returnedSchemas",
         description="Schemas used in the response",
     )
+    test_mode: bool | None = Field(
+        default=None,
+        alias="testMode",
+        description="Indicates if the request was executed in test mode",
+    )
+
+
+class BeaconHandover(BaseModel):
+    """Handover for linking to external data sources."""
+
+    model_config = {"populate_by_name": True}
+
+    handover_type: dict[str, Any] = Field(
+        ...,
+        alias="handoverType",
+        description="Handover type (ontology term)",
+    )
+    url: str = Field(..., description="URL to access the data")
+    note: str | None = Field(default=None, description="Additional note")
 
 
 class BeaconBooleanResponse(BaseModel):
     """Boolean response from Beacon query."""
 
+    model_config = {"populate_by_name": True}
+
     meta: BeaconResponseMeta = Field(..., description="Response metadata")
     response_summary: BeaconSummaryResults = Field(
         ...,
+        alias="responseSummary",
         description="Summary of query results",
     )
     info: dict[str, Any] | None = Field(
         default=None,
         description="Additional information",
     )
+    beacon_handovers: list[BeaconHandover] | None = Field(
+        default=None,
+        alias="beaconHandovers",
+        description="Handovers for accessing data externally",
+    )
     beacon_error: BeaconError | None = Field(
         default=None,
+        alias="beaconError",
         description="Error information if query failed",
     )
 
@@ -175,17 +208,26 @@ class BeaconBooleanResponse(BaseModel):
 class BeaconCountResponse(BaseModel):
     """Count response from Beacon query."""
 
+    model_config = {"populate_by_name": True}
+
     meta: BeaconResponseMeta = Field(..., description="Response metadata")
     response_summary: BeaconSummaryResults = Field(
         ...,
+        alias="responseSummary",
         description="Summary of query results",
     )
     info: dict[str, Any] | None = Field(
         default=None,
         description="Additional information",
     )
+    beacon_handovers: list[BeaconHandover] | None = Field(
+        default=None,
+        alias="beaconHandovers",
+        description="Handovers for accessing data externally",
+    )
     beacon_error: BeaconError | None = Field(
         default=None,
+        alias="beaconError",
         description="Error information if query failed",
     )
 
@@ -193,9 +235,12 @@ class BeaconCountResponse(BaseModel):
 class BeaconResultsetsResponse(BaseModel):
     """Full results response from Beacon query."""
 
+    model_config = {"populate_by_name": True}
+
     meta: BeaconResponseMeta = Field(..., description="Response metadata")
     response_summary: BeaconSummaryResults = Field(
         ...,
+        alias="responseSummary",
         description="Summary of query results",
     )
     response: list[ResultsetInstance] | None = Field(
@@ -206,7 +251,13 @@ class BeaconResultsetsResponse(BaseModel):
         default=None,
         description="Additional information",
     )
+    beacon_handovers: list[BeaconHandover] | None = Field(
+        default=None,
+        alias="beaconHandovers",
+        description="Handovers for accessing data externally",
+    )
     beacon_error: BeaconError | None = Field(
         default=None,
+        alias="beaconError",
         description="Error information if query failed",
     )

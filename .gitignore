@@ -84,3 +84,7 @@ site/
 *.tmp
 tmp/
 temp/
+
+# Node.js (for schema bundling)
+node_modules/
+package-lock.json
