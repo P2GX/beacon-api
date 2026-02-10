@@ -5,6 +5,7 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 from beacon_api.models.common import BeaconError, SchemaReference
+from beacon_api.models.common_types import OntologyTerm
 
 
 class BeaconOrganization(BaseModel):
@@ -169,7 +170,7 @@ class BeaconHandover(BaseModel):
 
     model_config = {"populate_by_name": True}
 
-    handover_type: dict[str, Any] = Field(
+    handover_type: OntologyTerm = Field(
         ...,
         alias="handoverType",
         description="Handover type (ontology term)",

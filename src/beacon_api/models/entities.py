@@ -4,6 +4,18 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
+from beacon_api.models.common_types import (
+    Disease,
+    Exposure,
+    KaryotypicSex,
+    Measurement,
+    OntologyTerm,
+    Pedigree,
+    PhenotypicFeature,
+    Procedure,
+    Treatment,
+)
+
 
 class Individual(BaseModel):
     """Individual/subject entity model."""
@@ -11,52 +23,51 @@ class Individual(BaseModel):
     model_config = {"populate_by_name": True}
 
     id: str = Field(..., description="Individual identifier")
-    sex: dict[str, Any] | None = Field(
+    sex: OntologyTerm | None = Field(
         default=None,
         description="Sex of the individual (ontology term)",
     )
-    karyotypic_sex: str | None = Field(
+    karyotypic_sex: KaryotypicSex | None = Field(
         default=None,
         alias="karyotypicSex",
         description="Chromosomal sex",
-        examples=["XX", "XY", "XO", "XXY", "XXXY"],
     )
-    ethnicity: dict[str, Any] | None = Field(
+    ethnicity: OntologyTerm | None = Field(
         default=None,
         description="Ethnic background ontology term",
     )
-    geographic_origin: dict[str, Any] | None = Field(
+    geographic_origin: OntologyTerm | None = Field(
         default=None,
         alias="geographicOrigin",
         description="Geographic origin ontology term",
     )
-    diseases: list[dict[str, Any]] | None = Field(
+    diseases: list[Disease] | None = Field(
         default=None,
         description="List of diseases associated with the individual",
     )
-    phenotypic_features: list[dict[str, Any]] | None = Field(
+    phenotypic_features: list[PhenotypicFeature] | None = Field(
         default=None,
         alias="phenotypicFeatures",
         description="List of phenotypic features",
     )
-    interventions_or_procedures: list[dict[str, Any]] | None = Field(
+    interventions_or_procedures: list[Procedure] | None = Field(
         default=None,
         alias="interventionsOrProcedures",
         description="List of interventions or procedures",
     )
-    exposures: list[dict[str, Any]] | None = Field(
+    exposures: list[Exposure] | None = Field(
         default=None,
         description="List of exposures",
     )
-    treatments: list[dict[str, Any]] | None = Field(
+    treatments: list[Treatment] | None = Field(
         default=None,
         description="List of treatments",
     )
-    pedigrees: list[dict[str, Any]] | None = Field(
+    pedigrees: list[Pedigree] | None = Field(
         default=None,
         description="Pedigree information",
     )
-    measurements: list[dict[str, Any]] | None = Field(
+    measurements: list[Measurement] | None = Field(
         default=None,
         description="List of measurements",
     )
@@ -77,17 +88,17 @@ class Biosample(BaseModel):
         alias="individualId",
         description="Reference to the individual this biosample was derived from",
     )
-    biosample_status: dict[str, Any] | None = Field(
+    biosample_status: OntologyTerm | None = Field(
         default=None,
         alias="biosampleStatus",
         description="Status of the biosample",
     )
-    sample_origin_type: dict[str, Any] | None = Field(
+    sample_origin_type: OntologyTerm | None = Field(
         default=None,
         alias="sampleOriginType",
         description="Type of sample origin",
     )
-    sample_origin_detail: dict[str, Any] | None = Field(
+    sample_origin_detail: OntologyTerm | None = Field(
         default=None,
         alias="sampleOriginDetail",
         description="Detailed information about sample origin",
@@ -102,56 +113,56 @@ class Biosample(BaseModel):
         alias="collectionMoment",
         description="Moment in time when sample was collected",
     )
-    obtention_procedure: dict[str, Any] | None = Field(
+    obtention_procedure: Procedure | None = Field(
         default=None,
         alias="obtentionProcedure",
         description="Procedure used to obtain the sample",
     )
-    phenotypic_features: list[dict[str, Any]] | None = Field(
+    phenotypic_features: list[PhenotypicFeature] | None = Field(
         default=None,
         alias="phenotypicFeatures",
         description="List of phenotypic features",
     )
-    measurements: list[dict[str, Any]] | None = Field(
+    measurements: list[Measurement] | None = Field(
         default=None,
         description="List of measurements",
     )
-    histological_diagnosis: dict[str, Any] | None = Field(
+    histological_diagnosis: OntologyTerm | None = Field(
         default=None,
         alias="histologicalDiagnosis",
         description="Histological diagnosis (ontology term)",
     )
-    pathological_stage: dict[str, Any] | None = Field(
+    pathological_stage: OntologyTerm | None = Field(
         default=None,
         alias="pathologicalStage",
         description="Pathological stage of the sample",
     )
-    pathological_tnm_finding: list[dict[str, Any]] | None = Field(
+    pathological_tnm_finding: list[OntologyTerm] | None = Field(
         default=None,
         alias="pathologicalTnmFinding",
         description="TNM pathological findings",
     )
-    tumor_progression: dict[str, Any] | None = Field(
+    tumor_progression: OntologyTerm | None = Field(
         default=None,
         alias="tumorProgression",
         description="Tumor progression status",
     )
-    tumor_grade: dict[str, Any] | None = Field(
+    tumor_grade: OntologyTerm | None = Field(
         default=None,
         alias="tumorGrade",
         description="Tumor grade",
     )
-    diagnostic_markers: list[dict[str, Any]] | None = Field(
+    diagnostic_markers: list[OntologyTerm] | None = Field(
         default=None,
         alias="diagnosticMarkers",
         description="List of diagnostic markers",
     )
-    sample_processing: dict[str, Any] | None = Field(
+    sample_processing: OntologyTerm | None = Field(
         default=None,
         alias="sampleProcessing",
         description="Sample processing information",
     )
-    sample_storage: dict[str, Any] | None = Field(
+    sample_storage: OntologyTerm | None = Field(
         default=None,
         alias="sampleStorage",
         description="Sample storage conditions",
@@ -281,7 +292,7 @@ class Cohort(BaseModel):
         description="Type of cohort",
         examples=["study-defined", "beacon-defined"],
     )
-    cohort_design: dict[str, Any] | None = Field(
+    cohort_design: OntologyTerm | None = Field(
         default=None,
         alias="cohortDesign",
         description="Cohort design (ontology term)",
@@ -292,7 +303,7 @@ class Cohort(BaseModel):
         description="Number of individuals in the cohort",
         ge=0,
     )
-    cohort_data_types: list[dict[str, Any]] | None = Field(
+    cohort_data_types: list[OntologyTerm] | None = Field(
         default=None,
         alias="cohortDataTypes",
         description="Types of data available for this cohort",
@@ -302,12 +313,12 @@ class Cohort(BaseModel):
         alias="collectionEvents",
         description="Collection events for this cohort",
     )
-    inclusion_criteria: dict[str, Any] | None = Field(
+    inclusion_criteria: OntologyTerm | None = Field(
         default=None,
         alias="inclusionCriteria",
         description="Inclusion criteria for the cohort",
     )
-    exclusion_criteria: dict[str, Any] | None = Field(
+    exclusion_criteria: OntologyTerm | None = Field(
         default=None,
         alias="exclusionCriteria",
         description="Exclusion criteria for the cohort",
@@ -344,7 +355,7 @@ class Dataset(BaseModel):
         alias="externalUrl",
         description="External URL for the dataset",
     )
-    data_use_conditions: dict[str, Any] | None = Field(
+    data_use_conditions: OntologyTerm | None = Field(
         default=None,
         alias="dataUseConditions",
         description="Data use conditions and restrictions",
@@ -376,7 +387,7 @@ class Run(BaseModel):
         alias="runDate",
         description="Date when the run was performed",
     )
-    library_source: dict[str, Any] | None = Field(
+    library_source: OntologyTerm | None = Field(
         default=None,
         alias="librarySource",
         description="Source of the library (ontology term)",
@@ -403,7 +414,7 @@ class Run(BaseModel):
         description="Sequencing platform",
         examples=["ILLUMINA", "PACBIO", "OXFORD_NANOPORE"],
     )
-    platform_model: dict[str, Any] | None = Field(
+    platform_model: OntologyTerm | None = Field(
         default=None,
         alias="platformModel",
         description="Specific platform model (ontology term)",
