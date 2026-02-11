@@ -214,11 +214,11 @@ class BeaconBooleanResponse(BaseModel):
         alias="responseSummary",
         description="Summary of query results",
     )
-    info: dict[str, Any] | None = Field(
+    info: dict[str, Any] = Field(
         default_factory=dict,
         description="Additional information",
     )
-    beacon_handovers: list[BeaconHandover] | None = Field(
+    beacon_handovers: list[BeaconHandover] = Field(
         default_factory=list,
         alias="beaconHandovers",
         description="Handovers for accessing data externally",
