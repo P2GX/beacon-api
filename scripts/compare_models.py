@@ -136,14 +136,13 @@ def normalize_field_name(name: str) -> str:
     - HTTPSConnection -> https_connection
     - XMLHttpRequest -> xml_http_request
     - camelCase -> camel_case
-    - IOError -> io_error
+    - getUserID -> get_user_id
     """
-    # Insert underscore before uppercase letters that follow lowercase letters
-    # or before the last uppercase in a sequence of uppercase letters
-    # Example: APIResponse -> API_Response (after first regex)
+    # First: Insert underscore before uppercase letter followed by lowercase
+    # (handles: APIResponse -> API_Response, camelCase -> camel_Case)
     s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-    # Handle remaining uppercase sequences followed by lowercase
-    # Example: HTTPConnection -> HTTP_Connection (handles the sequence)
+    # Second: Insert underscore between lowercase/digit and uppercase
+    # (handles: getUserID -> get_User_ID after first pass)
     s2 = re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1)
     return s2.lower()
 
