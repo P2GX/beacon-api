@@ -140,12 +140,10 @@ def normalize_field_name(name: str) -> str:
     """
     # Insert underscore before uppercase letters that follow lowercase letters
     # or before the last uppercase in a sequence of uppercase letters
-    # APIResponse: API(Response) -> api_(response)
-    # HTTPSConnection: HTTPS(Connection) -> https_(connection)
+    # Example: APIResponse -> API_Response (after first regex)
     s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-    # Handle remaining uppercase sequences
-    # e.g., "API_Response" -> "API_Response" (no change needed)
-    # or "HTTPConnection" -> "HTTP_Connection"
+    # Handle remaining uppercase sequences followed by lowercase
+    # Example: HTTPConnection -> HTTP_Connection (handles the sequence)
     s2 = re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1)
     return s2.lower()
 
