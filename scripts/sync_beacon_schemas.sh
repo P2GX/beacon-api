@@ -100,7 +100,7 @@ download_schemas() {
     release_info=$(get_release_info "$version")
 
     local tag_name
-    tag_name=$(echo "$release_info" | grep '"tag_name"' | head -1 | sed 's/.*: "\(.*\)".*/\1/')
+    tag_name=$(echo "$release_info" | jq -r '.tag_name')
 
     if [[ -z "$tag_name" ]]; then
         log_error "Could not find release: $version"
