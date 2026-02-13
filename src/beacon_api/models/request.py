@@ -1,11 +1,11 @@
 """Beacon v2 request models."""
 
-from enum import Enum
+from enum import StrEnum
 
 from pydantic import BaseModel, Field
 
 
-class RequestedGranularity(str, Enum):
+class RequestedGranularity(StrEnum):
     """Requested granularity of the response."""
 
     BOOLEAN = "boolean"

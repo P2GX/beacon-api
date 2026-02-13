@@ -12,10 +12,13 @@ from beacon_api.api import (
     analyses_router,
     biosamples_router,
     cohorts_router,
+    configuration_router,
     datasets_router,
+    entry_types_router,
     g_variations_router,
     individuals_router,
     info_router,
+    map_router,
     monitor_router,
     runs_router,
 )
@@ -72,6 +75,9 @@ def create_app() -> FastAPI:
 
     # Include routers
     app.include_router(info_router, prefix="/api")
+    app.include_router(configuration_router, prefix="/api")
+    app.include_router(map_router, prefix="/api")
+    app.include_router(entry_types_router, prefix="/api")
     app.include_router(individuals_router, prefix="/api")
     app.include_router(biosamples_router, prefix="/api")
     app.include_router(g_variations_router, prefix="/api")

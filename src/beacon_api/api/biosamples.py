@@ -11,16 +11,19 @@ from beacon_api.api.query_params import (
     PaginationSkip,
     create_request_body_from_params,
 )
+from beacon_api.api.response_utils import (
+    build_meta,
+    build_received_request_summary,
+    build_resultset_response,
+    build_summary,
+    filters_to_strings,
+    schema_for_entity,
+)
 from beacon_api.models.request import (
     BeaconRequestBody,
     RequestedGranularity,
 )
-from beacon_api.models.response import (
-    BeaconResponseMeta,
-    BeaconResultsetsResponse,
-    BeaconSummaryResults,
-    ResultsetInstance,
-)
+from beacon_api.models.response import BeaconResultsetsResponse
 
 router = APIRouter(prefix="/biosamples", tags=["biosamples"])
 
@@ -60,70 +63,55 @@ async def list_biosamples(
         )
         biosamples = await service.query(request_body)
 
-        meta = BeaconResponseMeta(
-            beacon_id="beacon-skeleton",
-            api_version="v2.0",
-            returned_granularity="record",
-            received_request_summary={
-                "requested_granularity": "record",
-                "filters": (
-                    [f.model_dump() for f in request_body.filters]
-                    if request_body.filters
-                    else []
-                ),
-                "pagination": {"skip": skip, "limit": limit},
-            },
+        requested_schemas = schema_for_entity("biosample")
+        received_request_summary = build_received_request_summary(
+            requested_granularity="record",
+            filters=filters_to_strings(request_body.filters),
+            pagination={"skip": skip, "limit": limit},
+            requested_schemas=requested_schemas,
         )
-
-        result_set = ResultsetInstance(
-            id="biosamples",
-            set_type="biosample",
-            exists=len(biosamples) > 0,
-            result_count=len(biosamples),
+        meta = build_meta(
+            returned_granularity="record",
+            received_request_summary=received_request_summary,
+            returned_schemas=requested_schemas,
+        )
+        response = build_resultset_response(
+            entity_type="biosample",
             results=[bs.model_dump() for bs in biosamples],
         )
-
-        summary = BeaconSummaryResults(
+        summary = build_summary(
             exists=len(biosamples) > 0,
             num_total_results=len(biosamples),
         )
 
         return {
-            "meta": meta.model_dump(),
-            "response_summary": summary.model_dump(),
-            "response": [result_set.model_dump()],
-            "info": None,
-            "beacon_error": None,
+            "meta": meta.model_dump(by_alias=True, exclude_none=True),
+            "responseSummary": summary.model_dump(by_alias=True, exclude_none=True),
+            "response": response.model_dump(by_alias=True, exclude_none=True),
         }
 
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e)) from None
     except NotImplementedError:
         # Return empty but valid response for unimplemented services
-        meta = BeaconResponseMeta(
-            beacon_id="beacon-skeleton",
-            api_version="v2.0",
+        requested_schemas = schema_for_entity("biosample")
+        received_request_summary = build_received_request_summary(
+            requested_granularity="record",
+            filters=[],
+            pagination={"skip": skip, "limit": limit},
+            requested_schemas=requested_schemas,
+        )
+        meta = build_meta(
             returned_granularity="record",
-            received_request_summary={
-                "requested_granularity": "record",
-                "filters": [],
-                "pagination": {"skip": skip, "limit": limit},
-            },
+            received_request_summary=received_request_summary,
+            returned_schemas=requested_schemas,
         )
-        result_set = ResultsetInstance(
-            id="biosamples",
-            set_type="biosample",
-            exists=False,
-            result_count=0,
-            results=[],
-        )
-        summary = BeaconSummaryResults(exists=False, num_total_results=0)
+        response = build_resultset_response(entity_type="biosample", results=[])
+        summary = build_summary(exists=False, num_total_results=0)
         return {
-            "meta": meta.model_dump(),
-            "response_summary": summary.model_dump(),
-            "response": [result_set.model_dump()],
-            "info": None,
-            "beacon_error": None,
+            "meta": meta.model_dump(by_alias=True, exclude_none=True),
+            "responseSummary": summary.model_dump(by_alias=True, exclude_none=True),
+            "response": response.model_dump(by_alias=True, exclude_none=True),
         }
 
 
@@ -150,33 +138,29 @@ async def get_biosample(
         if biosample is None:
             raise HTTPException(status_code=404, detail="Biosample not found")
 
-        meta = BeaconResponseMeta(
-            beacon_id="beacon-skeleton",
-            api_version="v2.0",
+        requested_schemas = schema_for_entity("biosample")
+        received_request_summary = build_received_request_summary(
+            requested_granularity="record",
+            filters=[],
+            pagination={"skip": 0, "limit": 1},
+            requested_schemas=requested_schemas,
+        )
+        meta = build_meta(
             returned_granularity="record",
-            received_request_summary={
-                "requested_granularity": "record",
-                "filters": [],
-                "requested_id": biosample_id,
-            },
+            received_request_summary=received_request_summary,
+            returned_schemas=requested_schemas,
         )
 
-        result_set = ResultsetInstance(
-            id="biosamples",
-            set_type="biosample",
-            exists=True,
-            result_count=1,
+        response = build_resultset_response(
+            entity_type="biosample",
             results=[biosample.model_dump()],
         )
-
-        summary = BeaconSummaryResults(exists=True, num_total_results=1)
+        summary = build_summary(exists=True, num_total_results=1)
 
         return {
-            "meta": meta.model_dump(),
-            "response_summary": summary.model_dump(),
-            "response": [result_set.model_dump()],
-            "info": None,
-            "beacon_error": None,
+            "meta": meta.model_dump(by_alias=True, exclude_none=True),
+            "responseSummary": summary.model_dump(by_alias=True, exclude_none=True),
+            "response": response.model_dump(by_alias=True, exclude_none=True),
         }
 
     except NotImplementedError:
@@ -210,93 +194,78 @@ async def query_biosamples(
     try:
         granularity = request_body.meta.requested_granularity
 
-        meta = BeaconResponseMeta(
-            beacon_id="beacon-skeleton",
-            api_version="v2.0",
+        requested_schemas = schema_for_entity("biosample")
+        received_request_summary = build_received_request_summary(
+            requested_granularity=granularity.value,
+            filters=filters_to_strings(request_body.filters),
+            pagination=request_body.meta.pagination or {"skip": 0, "limit": 0},
+            requested_schemas=requested_schemas,
+            include_resultset_responses=request_body.meta.include_resultset_responses,
+        )
+        meta = build_meta(
             returned_granularity=granularity.value,
-            received_request_summary={
-                "requested_granularity": granularity.value,
-                "filters": (
-                    [f.model_dump() for f in request_body.filters]
-                    if request_body.filters
-                    else []
-                ),
-            },
+            received_request_summary=received_request_summary,
+            returned_schemas=requested_schemas,
         )
 
         if granularity == RequestedGranularity.BOOLEAN:
             exists = await service.exists(request_body)
-            summary = BeaconSummaryResults(exists=exists)
+            summary = build_summary(exists=exists)
             return {
-                "meta": meta.model_dump(),
-                "response_summary": summary.model_dump(),
-                "info": None,
-                "beacon_error": None,
+                "meta": meta.model_dump(by_alias=True, exclude_none=True),
+                "responseSummary": summary.model_dump(by_alias=True, exclude_none=True),
             }
 
         elif granularity == RequestedGranularity.COUNT:
             count = await service.count(request_body)
-            summary = BeaconSummaryResults(exists=count > 0, num_total_results=count)
+            summary = build_summary(exists=count > 0, num_total_results=count)
             return {
-                "meta": meta.model_dump(),
-                "response_summary": summary.model_dump(),
-                "info": None,
-                "beacon_error": None,
+                "meta": meta.model_dump(by_alias=True, exclude_none=True),
+                "responseSummary": summary.model_dump(by_alias=True, exclude_none=True),
             }
 
         else:  # RECORD
             biosamples = await service.query(request_body)
-            result_set = ResultsetInstance(
-                id="biosamples",
-                set_type="biosample",
-                exists=len(biosamples) > 0,
-                result_count=len(biosamples),
+            response = build_resultset_response(
+                entity_type="biosample",
                 results=[bs.model_dump() for bs in biosamples],
             )
-            summary = BeaconSummaryResults(
+            summary = build_summary(
                 exists=len(biosamples) > 0,
                 num_total_results=len(biosamples),
             )
             return {
-                "meta": meta.model_dump(),
-                "response_summary": summary.model_dump(),
-                "response": [result_set.model_dump()],
+                "meta": meta.model_dump(by_alias=True, exclude_none=True),
+                "responseSummary": summary.model_dump(by_alias=True, exclude_none=True),
+                "response": response.model_dump(by_alias=True, exclude_none=True),
             }
 
     except NotImplementedError:
         # Return empty but valid response for unimplemented services (beacon-verifier compliance)
-        meta = BeaconResponseMeta(
-            beacon_id="beacon-skeleton",
-            api_version="v2.0",
-            returned_granularity=request_body.meta.requested_granularity.value,
-            received_request_summary={
-                "requested_granularity": request_body.meta.requested_granularity.value,
-                "filters": (
-                    [f.model_dump() for f in request_body.filters]
-                    if request_body.filters
-                    else []
-                ),
-            },
+        requested_schemas = schema_for_entity("biosample")
+        received_request_summary = build_received_request_summary(
+            requested_granularity=request_body.meta.requested_granularity.value,
+            filters=filters_to_strings(request_body.filters),
+            pagination=request_body.meta.pagination or {"skip": 0, "limit": 0},
+            requested_schemas=requested_schemas,
+            include_resultset_responses=request_body.meta.include_resultset_responses,
         )
-        summary = BeaconSummaryResults(exists=False, num_total_results=0)
+        meta = build_meta(
+            returned_granularity=request_body.meta.requested_granularity.value,
+            received_request_summary=received_request_summary,
+            returned_schemas=requested_schemas,
+        )
+        summary = build_summary(exists=False, num_total_results=0)
 
         if request_body.meta.requested_granularity == RequestedGranularity.RECORD:
-            result_set = ResultsetInstance(
-                id="biosamples",
-                set_type="biosample",
-                exists=False,
-                result_count=0,
-                results=[],
-            )
+            response = build_resultset_response(entity_type="biosample", results=[])
             return {
-                "meta": meta.model_dump(),
-                "response_summary": summary.model_dump(),
-                "response": [result_set.model_dump()],
+                "meta": meta.model_dump(by_alias=True, exclude_none=True),
+                "responseSummary": summary.model_dump(by_alias=True, exclude_none=True),
+                "response": response.model_dump(by_alias=True, exclude_none=True),
             }
         else:
             return {
-                "meta": meta.model_dump(),
-                "response_summary": summary.model_dump(),
-                "info": None,
-                "beacon_error": None,
+                "meta": meta.model_dump(by_alias=True, exclude_none=True),
+                "responseSummary": summary.model_dump(by_alias=True, exclude_none=True),
             }

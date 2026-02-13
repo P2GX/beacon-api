@@ -11,18 +11,25 @@ from beacon_api.api.query_params import (
     PaginationSkip,
     create_request_body_from_params,
 )
+from beacon_api.api.response_utils import (
+    build_collections_response,
+    build_meta,
+    build_received_request_summary,
+    build_resultset_response,
+    build_summary,
+    filters_to_strings,
+    schema_for_entity,
+)
 from beacon_api.models.request import BeaconRequestBody, RequestedGranularity
 from beacon_api.models.response import (
-    BeaconResponseMeta,
+    BeaconCollectionsResponse,
     BeaconResultsetsResponse,
-    BeaconSummaryResults,
-    ResultsetInstance,
 )
 
 router = APIRouter(prefix="/cohorts", tags=["cohorts"])
 
 
-@router.get("", response_model=BeaconResultsetsResponse)
+@router.get("", response_model=BeaconCollectionsResponse)
 async def list_cohorts(
     service: CohortServiceDep,
     skip: PaginationSkip = 0,
@@ -39,7 +46,7 @@ async def list_cohorts(
         filters: Beacon v2 filters in JSON or comma-separated format (optional)
 
     Returns:
-        BeaconResultsetsResponse with cohort records
+        BeaconCollectionsResponse with cohort collections
 
     Raises:
         HTTPException: 400 if filters are invalid
@@ -53,70 +60,54 @@ async def list_cohorts(
         )
         cohorts = await service.query(request_body)
 
-        meta = BeaconResponseMeta(
-            beacon_id="beacon-skeleton",
-            api_version="v2.0",
+        requested_schemas = schema_for_entity("cohort")
+        received_request_summary = build_received_request_summary(
+            requested_granularity="record",
+            filters=filters_to_strings(request_body.filters),
+            pagination={"skip": skip, "limit": limit},
+            requested_schemas=requested_schemas,
+        )
+        meta = build_meta(
             returned_granularity="record",
-            received_request_summary={
-                "requested_granularity": "record",
-                "filters": (
-                    [f.model_dump() for f in request_body.filters]
-                    if request_body.filters
-                    else []
-                ),
-                "pagination": {"skip": skip, "limit": limit},
-            },
+            received_request_summary=received_request_summary,
+            returned_schemas=requested_schemas,
         )
-
-        result_set = ResultsetInstance(
-            id="cohorts",
-            set_type="cohort",
-            exists=len(cohorts) > 0,
-            result_count=len(cohorts),
-            results=[c.model_dump() for c in cohorts],
+        response = build_collections_response(
+            collections=[c.model_dump() for c in cohorts],
         )
-
-        summary = BeaconSummaryResults(
+        summary = build_summary(
             exists=len(cohorts) > 0,
             num_total_results=len(cohorts),
         )
 
         return {
-            "meta": meta.model_dump(),
-            "response_summary": summary.model_dump(),
-            "response": [result_set.model_dump()],
-            "info": None,
-            "beacon_error": None,
+            "meta": meta.model_dump(by_alias=True, exclude_none=True),
+            "responseSummary": summary.model_dump(by_alias=True, exclude_none=True),
+            "response": response.model_dump(by_alias=True, exclude_none=True),
         }
 
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e)) from None
     except NotImplementedError:
         # Return empty but valid response for unimplemented services
-        meta = BeaconResponseMeta(
-            beacon_id="beacon-skeleton",
-            api_version="v2.0",
+        requested_schemas = schema_for_entity("cohort")
+        received_request_summary = build_received_request_summary(
+            requested_granularity="record",
+            filters=[],
+            pagination={"skip": skip, "limit": limit},
+            requested_schemas=requested_schemas,
+        )
+        meta = build_meta(
             returned_granularity="record",
-            received_request_summary={
-                "requested_granularity": "record",
-                "filters": [],
-                "pagination": {"skip": skip, "limit": limit},
-            },
+            received_request_summary=received_request_summary,
+            returned_schemas=requested_schemas,
         )
-        result_set = ResultsetInstance(
-            id="cohorts",
-            set_type="cohort",
-            exists=False,
-            result_count=0,
-            results=[],
-        )
-        summary = BeaconSummaryResults(exists=False, num_total_results=0)
+        response = build_collections_response(collections=[])
+        summary = build_summary(exists=False, num_total_results=0)
         return {
-            "meta": meta.model_dump(),
-            "response_summary": summary.model_dump(),
-            "response": [result_set.model_dump()],
-            "info": None,
-            "beacon_error": None,
+            "meta": meta.model_dump(by_alias=True, exclude_none=True),
+            "responseSummary": summary.model_dump(by_alias=True, exclude_none=True),
+            "response": response.model_dump(by_alias=True, exclude_none=True),
         }
 
 
@@ -147,93 +138,78 @@ async def query_cohorts(
         granularity = request_body.meta.requested_granularity
 
         # Create response metadata
-        meta = BeaconResponseMeta(
-            beacon_id="beacon-skeleton",
-            api_version="v2.0",
+        requested_schemas = schema_for_entity("cohort")
+        received_request_summary = build_received_request_summary(
+            requested_granularity=granularity.value,
+            filters=filters_to_strings(request_body.filters),
+            pagination=request_body.meta.pagination or {"skip": 0, "limit": 0},
+            requested_schemas=requested_schemas,
+            include_resultset_responses=request_body.meta.include_resultset_responses,
+        )
+        meta = build_meta(
             returned_granularity=granularity.value,
-            received_request_summary={
-                "requested_granularity": granularity.value,
-                "filters": (
-                    [f.model_dump() for f in request_body.filters]
-                    if request_body.filters
-                    else []
-                ),
-            },
+            received_request_summary=received_request_summary,
+            returned_schemas=requested_schemas,
         )
 
         if granularity == RequestedGranularity.BOOLEAN:
             exists = await service.exists(request_body)
-            summary = BeaconSummaryResults(exists=exists)
+            summary = build_summary(exists=exists)
             return {
-                "meta": meta.model_dump(),
-                "response_summary": summary.model_dump(),
-                "info": None,
-                "beacon_error": None,
+                "meta": meta.model_dump(by_alias=True, exclude_none=True),
+                "responseSummary": summary.model_dump(by_alias=True, exclude_none=True),
             }
 
         elif granularity == RequestedGranularity.COUNT:
             count = await service.count(request_body)
-            summary = BeaconSummaryResults(exists=count > 0, num_total_results=count)
+            summary = build_summary(exists=count > 0, num_total_results=count)
             return {
-                "meta": meta.model_dump(),
-                "response_summary": summary.model_dump(),
-                "info": None,
-                "beacon_error": None,
+                "meta": meta.model_dump(by_alias=True, exclude_none=True),
+                "responseSummary": summary.model_dump(by_alias=True, exclude_none=True),
             }
 
         else:  # RECORD
             cohorts = await service.query(request_body)
-            result_set = ResultsetInstance(
-                id="cohorts",
-                set_type="cohort",
-                exists=len(cohorts) > 0,
-                result_count=len(cohorts),
+            response = build_resultset_response(
+                entity_type="cohort",
                 results=[c.model_dump() for c in cohorts],
             )
-            summary = BeaconSummaryResults(
+            summary = build_summary(
                 exists=len(cohorts) > 0,
                 num_total_results=len(cohorts),
             )
             return {
-                "meta": meta.model_dump(),
-                "response_summary": summary.model_dump(),
-                "response": [result_set.model_dump()],
+                "meta": meta.model_dump(by_alias=True, exclude_none=True),
+                "responseSummary": summary.model_dump(by_alias=True, exclude_none=True),
+                "response": response.model_dump(by_alias=True, exclude_none=True),
             }
 
     except NotImplementedError:
         # Return empty but valid response for unimplemented services (beacon-verifier compliance)
-        meta = BeaconResponseMeta(
-            beacon_id="beacon-skeleton",
-            api_version="v2.0",
-            returned_granularity=request_body.meta.requested_granularity.value,
-            received_request_summary={
-                "requested_granularity": request_body.meta.requested_granularity.value,
-                "filters": (
-                    [f.model_dump() for f in request_body.filters]
-                    if request_body.filters
-                    else []
-                ),
-            },
+        requested_schemas = schema_for_entity("cohort")
+        received_request_summary = build_received_request_summary(
+            requested_granularity=request_body.meta.requested_granularity.value,
+            filters=filters_to_strings(request_body.filters),
+            pagination=request_body.meta.pagination or {"skip": 0, "limit": 0},
+            requested_schemas=requested_schemas,
+            include_resultset_responses=request_body.meta.include_resultset_responses,
         )
-        summary = BeaconSummaryResults(exists=False, num_total_results=0)
+        meta = build_meta(
+            returned_granularity=request_body.meta.requested_granularity.value,
+            received_request_summary=received_request_summary,
+            returned_schemas=requested_schemas,
+        )
+        summary = build_summary(exists=False, num_total_results=0)
 
         if request_body.meta.requested_granularity == RequestedGranularity.RECORD:
-            result_set = ResultsetInstance(
-                id="cohorts",
-                set_type="cohort",
-                exists=False,
-                result_count=0,
-                results=[],
-            )
+            response = build_resultset_response(entity_type="cohort", results=[])
             return {
-                "meta": meta.model_dump(),
-                "response_summary": summary.model_dump(),
-                "response": [result_set.model_dump()],
+                "meta": meta.model_dump(by_alias=True, exclude_none=True),
+                "responseSummary": summary.model_dump(by_alias=True, exclude_none=True),
+                "response": response.model_dump(by_alias=True, exclude_none=True),
             }
         else:
             return {
-                "meta": meta.model_dump(),
-                "response_summary": summary.model_dump(),
-                "info": None,
-                "beacon_error": None,
+                "meta": meta.model_dump(by_alias=True, exclude_none=True),
+                "responseSummary": summary.model_dump(by_alias=True, exclude_none=True),
             }

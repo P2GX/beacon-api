@@ -54,20 +54,19 @@ class ListingQuery(BaseModel):
 class SchemaReference(BaseModel):
     """Reference to a schema definition."""
 
-    schema_name: str = Field(
+    model_config = {"populate_by_name": True}
+
+    entity_type: str = Field(
         ...,
-        description="Name of the schema",
-        examples=["beacon-individual-v2.0.0"],
+        alias="entityType",
+        description="Entity type associated with the schema",
+        examples=["individual", "biosample"],
     )
-    schema_version: str = Field(
+    schema: str = Field(
         ...,
-        description="Version of the schema",
-        examples=["2.0.0"],
-    )
-    schema_url: str | None = Field(
-        default=None,
-        description="URL to the schema definition",
+        description="Schema reference (URL or file path)",
         examples=[
-            "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/individuals/defaultSchema.json"
+            "./ga4gh-beacon-dataset-v2.0.0",
+            "https://www.example.org/schemas/ga4gh-beacon-dataset-v2.0.0.json",
         ],
     )

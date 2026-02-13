@@ -250,6 +250,68 @@ pip install pre-commit
 pre-commit install
 ```
 
+### Schema Synchronization
+
+This project includes tooling to detect drift between your Pydantic models and the official [Beacon v2 JSON schemas](https://github.com/ga4gh-beacon/beacon-v2).
+
+#### Prerequisites
+
+```bash
+npm install @apidevtools/json-schema-ref-parser
+```
+
+#### Sync and Compare
+
+Run the sync script to download schemas and compare against your models:
+
+```bash
+# Download latest release and compare
+./scripts/sync_beacon_schemas.sh
+
+# Use a specific version
+./scripts/sync_beacon_schemas.sh --version v2.1.0
+
+# Clean cached schemas and re-download
+./scripts/sync_beacon_schemas.sh --clean
+```
+
+Or run just the comparison (if schemas are already downloaded):
+
+```bash
+uv run python scripts/compare_models.py
+```
+
+#### What It Does
+
+1. **Downloads** Beacon v2 release artifacts from GitHub
+2. **Bundles** JSON schemas (resolves all `$ref` references)
+3. **Compares** schema fields against `src/beacon_api/models/`
+4. **Reports** missing fields, extra fields, and coverage
+
+#### Output
+
+The comparison script reports:
+- **Missing fields** - Fields in the schema but not in your model
+- **Extra fields** - Custom fields you've added (not in schema)
+- **Field counts** - Coverage summary per model
+
+Downloaded schemas are cached in `tmp/` (gitignored):
+
+```
+tmp/
+├── beacon-v2-schemas/     # Downloaded release artifacts
+└── bundled_schemas/       # Resolved JSON schemas
+```
+
+#### Workflow for Updating Models
+
+1. Run `./scripts/sync_beacon_schemas.sh`
+2. Review the comparison report for missing fields
+3. Add missing fields to `src/beacon_api/models/` as needed
+4. Re-run to verify coverage
+
+This approach keeps you in control while ensuring your models stay aligned with the upstream specification.
+
 ## API Endpoints
 
 ### Info
