@@ -11,10 +11,6 @@ from beacon_api.api.query_params import (
     PaginationSkip,
     create_request_body_from_params,
 )
-from beacon_api.models.request import (
-    BeaconRequestBody,
-    RequestedGranularity,
-)
 from beacon_api.api.response_utils import (
     build_meta,
     build_received_request_summary,
@@ -22,6 +18,10 @@ from beacon_api.api.response_utils import (
     build_summary,
     filters_to_strings,
     schema_for_entity,
+)
+from beacon_api.models.request import (
+    BeaconRequestBody,
+    RequestedGranularity,
 )
 from beacon_api.models.response import BeaconResultsetsResponse
 
