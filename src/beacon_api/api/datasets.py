@@ -21,7 +21,10 @@ from beacon_api.api.response_utils import (
     schema_for_entity,
 )
 from beacon_api.models.request import BeaconRequestBody, RequestedGranularity
-from beacon_api.models.response import BeaconCollectionsResponse, BeaconResultsetsResponse
+from beacon_api.models.response import (
+    BeaconCollectionsResponse,
+    BeaconResultsetsResponse,
+)
 
 router = APIRouter(prefix="/datasets", tags=["datasets"])
 

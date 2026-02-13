@@ -197,7 +197,9 @@ async def query_genomic_variations(
         summary = build_summary(exists=False, num_total_results=0)
 
         if request_body.meta.requested_granularity == RequestedGranularity.RECORD:
-            response = build_resultset_response(entity_type="genomicVariation", results=[])
+            response = build_resultset_response(
+                entity_type="genomicVariation", results=[]
+            )
             return {
                 "meta": meta.model_dump(by_alias=True, exclude_none=True),
                 "responseSummary": summary.model_dump(by_alias=True, exclude_none=True),

@@ -84,7 +84,9 @@ def build_collections_response(
     return BeaconCollectionsResponseBody(collections=collections)
 
 
-def build_summary(exists: bool, num_total_results: int | None = None) -> BeaconSummaryResults:
+def build_summary(
+    exists: bool, num_total_results: int | None = None
+) -> BeaconSummaryResults:
     """Build a response summary."""
     return BeaconSummaryResults(exists=exists, num_total_results=num_total_results)
 
