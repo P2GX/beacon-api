@@ -19,6 +19,7 @@ from __future__ import annotations
 import ast
 import json
 import logging
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -128,14 +129,22 @@ def extract_model_fields(model_path: Path, class_name: str) -> dict[str, str]:
 
 
 def normalize_field_name(name: str) -> str:
-    """Normalize field name for comparison (camelCase to snake_case)."""
-    # Simple camelCase to snake_case conversion
-    result = []
-    for i, char in enumerate(name):
-        if char.isupper() and i > 0:
-            result.append("_")
-        result.append(char.lower())
-    return "".join(result)
+    """Normalize field name for comparison (camelCase to snake_case).
+    
+    Handles consecutive capitals correctly:
+    - APIResponse -> api_response
+    - HTTPSConnection -> https_connection
+    - XMLHttpRequest -> xml_http_request
+    - camelCase -> camel_case
+    - getUserID -> get_user_id
+    """
+    # First: Insert underscore before uppercase letter followed by lowercase
+    # (handles: APIResponse -> API_Response, camelCase -> camel_Case)
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+    # Second: Insert underscore between lowercase/digit and uppercase
+    # (handles: getUserID -> get_User_ID after first pass)
+    s2 = re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1)
+    return s2.lower()
 
 
 def compare_model(
